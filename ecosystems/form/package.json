@@ -1,0 +1,52 @@
+{
+  "name": "@geastack-community/form",
+  "version": "1.0.0",
+  "description": "The definitive, Zero-Hooks form library for Gea.",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "pnpm build:js && pnpm build:dts",
+    "build:js": "esbuild src/index.ts --bundle --format=cjs --outfile=dist/index.cjs && esbuild src/index.ts --bundle --format=esm --outfile=dist/index.js",
+    "build:dts": "dts-bundle-generator -o dist/index.d.ts src/index.ts",
+    "prepublishOnly": "pnpm build"
+  },
+  "keywords": [
+    "gea",
+    "geajs",
+    "form",
+    "validation",
+    "withForm"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "GeaStack Community",
+  "license": "MIT",
+  "peerDependencies": {
+    "@geajs/core": "^1.4.0"
+  },
+  "devDependencies": {
+    "@geajs/core": "^1.4.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/geastack-community/ecosystem.git",
+    "directory": "ecosystems/form"
+  },
+  "bugs": {
+    "url": "https://github.com/geastack-community/ecosystem/issues"
+  },
+  "homepage": "https://github.com/geastack-community/ecosystem/tree/main/ecosystems/form#readme"
+}

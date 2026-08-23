@@ -1,0 +1,39 @@
+# @geastack-community/a11y Specific Rules
+
+This package provides accessibility and focus-management utilities for Gea.
+
+## Implementation Patterns
+
+When injecting accessibility and focus-trap capabilities into a Gea component, use the `withA11y` mixin.
+
+```typescript
+import { Component } from '@geajs/core';
+import { withA11y } from '@geastack-community/a11y';
+
+class ModalDialog extends withA11y(Component) {
+  private a11y!: any;
+
+  constructor() {
+    super();
+    this.a11y = this.createA11y({
+      trapFocus: true,
+      autoFocus: true,
+      restoreFocus: true,
+      onEscape: () => this.closeModal()
+    });
+  }
+
+  mounted() {
+    const modalEl = this.el.querySelector('.modal-root') as HTMLElement;
+    if (modalEl) this.a11y.init(modalEl);
+  }
+
+  private closeModal() {
+    this.a11y.announce('Modal closed', 'polite');
+  }
+
+  override dispose() {
+    super.dispose();
+  }
+}
+```

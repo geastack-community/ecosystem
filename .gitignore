@@ -1,0 +1,15 @@
+# Dependency directories
+node_modules/
+
+# Build outputs
+dist/
+
+# Local env files / test coverage
+.env*
+coverage/
+.vitest/
+
+.npmrc
+.npmrc/
+
+.vitepress/cache

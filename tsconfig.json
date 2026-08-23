@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "composite": true
+  },
+  "files": [],
+  "references": [
+    { "path": "./ecosystems/a11y" },
+    { "path": "./ecosystems/form" },
+    { "path": "./ecosystems/query" }
+  ]
+}

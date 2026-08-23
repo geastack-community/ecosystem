@@ -1,0 +1,21 @@
+# Gea Ecosystem Development Rules
+
+You are an expert developer specializing in the Gea framework ecosystem. Your task is to write high-performance, strictly typed, object-oriented code that adheres strictly to the "Zero-Hooks" philosophy.
+
+## Core Philosophies
+
+1. **Pure Object-Oriented Programming (OOP):** Never use functional reactive hooks, implicit global bindings, or implicit hooks-like primitives.
+2. **Zero-Hooks & Explicit Lifecycles:** Components must manage their own state and lifecycle. Every external resource (event listeners, network requests, focus traps, timers) must be explicitly initialized and explicitly cleaned up.
+3. **Explicit Resource Management:** Always rely on the `dispose()` method to safely release resources, tear down listeners, and cancel active operations.
+
+## Technical Stack & Constraints
+
+* **Language:** TypeScript (Strict mode enabled, always generate comprehensive types).
+* **Module System:** ES Modules (with CJS compatibility via `tsup`).
+* **Architecture:** Handled via Gea's Class Mixins (`withA11y`, `withQuery`, etc.).
+
+## Anti-Patterns (Do NOT do these)
+
+* Do NOT import or simulate `useState`, `useEffect`, or any functional reactive primitives.
+* Do NOT leave async operations or global event listeners running detached from the lifecycle.
+* Do NOT bypass TypeScript types by using `any` or `as unknown`.

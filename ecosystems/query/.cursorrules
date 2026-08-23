@@ -1,0 +1,36 @@
+# @geastack-community/query Specific Rules
+
+This package provides data-fetching and caching utilities for Gea.
+
+## Implementation Patterns
+
+When injecting query capabilities into a Gea component, use the `withQuery` mixin.
+
+```typescript
+import { BaseComponent } from '@geajs/core';
+import { withQuery } from '@geastack-community/query';
+
+class MyComponent extends withQuery(BaseComponent) {
+  constructor() {
+    super();
+    this.registerQuery('userData', {
+      queryFn: async () => {
+        const res = await fetch('/api/user');
+        return res.json();
+      },
+      staleTime: 1000 * 60 * 5,
+    });
+  }
+
+  render() {
+    const { data, isLoading, error } = this.getQueryState('userData');
+    if (isLoading) return 'Loading...';
+    if (error) return `Error: ${error.message}`;
+    return `Hello, ${data.name}!`;
+  }
+
+  override dispose() {
+    super.dispose();
+  }
+}
+```
