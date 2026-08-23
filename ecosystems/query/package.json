@@ -1,6 +1,6 @@
 {
   "name": "@geastack-community/query",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "The definitive, Zero-Hooks data-fetching and caching library for Gea.",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -18,8 +18,8 @@
   ],
   "scripts": {
     "build": "pnpm build:js && pnpm build:dts",
-    "build:js": "esbuild src/index.ts --bundle --format=cjs --outfile=dist/index.cjs && esbuild src/index.ts --bundle --format=esm --outfile=dist/index.js",
-    "build:dts": "dts-bundle-generator -o dist/index.d.ts src/index.ts",
+    "build:js": "esbuild src/index.ts --bundle --packages=external --minify --format=cjs --outfile=dist/index.cjs && esbuild src/index.ts --bundle --packages=external --minify --format=esm --outfile=dist/index.js",
+    "build:dts": "dts-bundle-generator -o dist/index.d.ts src/index.ts --no-check",
     "prepublishOnly": "pnpm build",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
