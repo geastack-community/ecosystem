@@ -1,4 +1,4 @@
 packages:
-  - 'ecosystems/*'
+  - 'ecosystems/**'
 allowBuilds:
-  esbuild: false
+  esbuild: true

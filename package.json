@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "pnpm --filter \"./ecosystems/*\" build",
-    "dev": "pnpm --filter \"./ecosystems/*\" --parallel dev",
+    "build": "pnpm --filter \"./ecosystems/**\" build",
+    "dev": "pnpm --filter \"./ecosystems/**\" --parallel dev",
     "test": "vitest run",
     "typecheck": "tsc --build"
   },

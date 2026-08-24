@@ -30,19 +30,19 @@ importers:
         specifier: ^4.1.10
         version: 4.1.11(@types/node@26.2.0)(happy-dom@20.11.6)(vite@8.2.2(@types/node@26.2.0)(esbuild@0.28.2))
 
-  ecosystems/a11y:
+  ecosystems/geajs/a11y:
     devDependencies:
       '@geajs/core':
         specifier: ^1.4.0
         version: 1.4.0
 
-  ecosystems/form:
+  ecosystems/geajs/form:
     devDependencies:
       '@geajs/core':
         specifier: ^1.4.0
         version: 1.4.0
 
-  ecosystems/query:
+  ecosystems/geajs/query:
     devDependencies:
       '@geajs/core':
         specifier: ^1.4.0

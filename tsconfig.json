@@ -13,8 +13,8 @@
   },
   "files": [],
   "references": [
-    { "path": "./ecosystems/a11y" },
-    { "path": "./ecosystems/form" },
-    { "path": "./ecosystems/query" }
+    { "path": "./ecosystems/geajs/a11y" },
+    { "path": "./ecosystems/geajs/form" },
+    { "path": "./ecosystems/geajs/query" }
   ]
 }
