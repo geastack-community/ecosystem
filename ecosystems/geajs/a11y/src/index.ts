@@ -7,9 +7,7 @@ export interface GeaA11yOptions {
     onEscape?: (e: KeyboardEvent) => void;
 }
 
-
 const trapStack: GeaA11y[] = [];
-
 
 let politeLiveRegion: HTMLElement | null = null;
 let assertiveLiveRegion: HTMLElement | null = null;

@@ -1,0 +1,56 @@
+{
+  "name": "@geastack-community/context",
+  "version": "1.0.0",
+  "description": "The definitive, Zero-Hooks context library for Gea.",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "pnpm build:js && pnpm build:dts",
+    "build:js": "esbuild src/index.ts --bundle --packages=external --minify --format=cjs --outfile=dist/index.cjs && esbuild src/index.ts --bundle --packages=external --minify --format=esm --outfile=dist/index.js",
+    "build:dts": "dts-bundle-generator -o dist/index.d.ts src/index.ts --no-check",
+    "prepublishOnly": "pnpm build",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
+  },
+  "keywords": [
+    "gea",
+    "geajs",
+    "context",
+    "store",
+    "withContextProvider"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "GeaStack Community",
+  "license": "MIT",
+  "peerDependencies": {
+    "@geajs/core": "^1.4.0"
+  },
+  "devDependencies": {
+    "@geajs/core": "^1.4.0",
+    "vitepress": "^1.6.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/geastack-community/ecosystem.git",
+    "directory": "ecosystems/query"
+  },
+  "bugs": {
+    "url": "https://github.com/geastack-community/ecosystem/issues"
+  },
+  "homepage": "https://github.com/geastack-community/ecosystem/tree/main/ecosystems/query#readme"
+}
