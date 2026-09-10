@@ -119,4 +119,32 @@ describe('GeaContext', () => {
 
     expect(() => child.store).toThrowError(/Could not find provided context/);
   })
+
+  it('should return null when context is not found and defaultValue is null', () => {
+    const context = createContext<any>(null)
+    const component = {} as Component
+    const result = injectContext(component, context)
+    expect(result).toBeNull()
+  })
+
+  it('should return false when context is not found and defaultValue is false', () => {
+    const context = createContext<any>(false)
+    const component = {} as Component
+    const result = injectContext(component, context)
+    expect(result).toBe(false)
+  })
+
+  it('should return 0 when context is not found and defaultValue is 0', () => {
+    const context = createContext<any>(0)
+    const component = {} as Component
+    const result = injectContext(component, context)
+    expect(result).toBe(0)
+  })
+
+  it('should return an empty string when context is not found and defaultValue is ""', () => {
+    const context = createContext<any>('')
+    const component = {} as Component
+    const result = injectContext(component, context)
+    expect(result).toBe('')
+  })
 })

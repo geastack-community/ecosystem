@@ -72,7 +72,7 @@ export function injectContext<T extends Store>(
     current = current.parent || current.props?._parent
   }
 
-  if (context.defaultValue) {
+  if (context.defaultValue !== undefined) {
     return context.defaultValue
   }
 
