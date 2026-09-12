@@ -1,4 +1,4 @@
-import { Store, Component } from '@geajs/core';
+import { Store } from '@geajs/core';
 
 export interface GeaA11yOptions {
     trapFocus?: boolean;
