@@ -1,4 +1,4 @@
-import { Store } from '@geajs/core';
+import { Store, Component } from '@geajs/core';
 
 export interface GeaA11yOptions {
     trapFocus?: boolean;
@@ -12,7 +12,9 @@ const trapStack: GeaA11y[] = [];
 let politeLiveRegion: HTMLElement | null = null;
 let assertiveLiveRegion: HTMLElement | null = null;
 
-function getLiveRegion(politeness: 'polite' | 'assertive'): HTMLElement {
+function getLiveRegion(politeness: 'polite' | 'assertive'): HTMLElement | null {
+    if (typeof document === 'undefined' || !document.body) return null;
+
     const isAssertive = politeness === 'assertive';
     let region = isAssertive ? assertiveLiveRegion : politeLiveRegion;
 
@@ -20,7 +22,6 @@ function getLiveRegion(politeness: 'polite' | 'assertive'): HTMLElement {
         region = document.createElement('div');
         region.setAttribute('aria-live', politeness);
         region.setAttribute('aria-atomic', 'true');
-        
         
         Object.assign(region.style, {
             position: 'absolute',
@@ -76,8 +77,8 @@ export class GeaA11y extends Store {
         this.srMessage = message;
 
         const region = getLiveRegion(politeness);
-        
-        
+        if (!region) return;
+
         region.textContent = '';
         setTimeout(() => {
             region.textContent = message;
@@ -87,13 +88,12 @@ export class GeaA11y extends Store {
     public activateTrap() {
         if (!this.rootElement || this.isTrapped) return;
 
-        if (this.options.restoreFocus) {
+        if (this.options.restoreFocus && typeof document !== 'undefined') {
             this.previousFocusedElement = document.activeElement as HTMLElement;
         }
 
         this.isTrapped = true;
 
-        
         if (!trapStack.includes(this)) {
             trapStack.push(this);
         }
@@ -110,7 +110,6 @@ export class GeaA11y extends Store {
 
         this.isTrapped = false;
 
-        
         const index = trapStack.indexOf(this);
         if (index !== -1) {
             trapStack.splice(index, 1);
@@ -125,18 +124,16 @@ export class GeaA11y extends Store {
     }
 
     private setupEventListeners() {
-        if (this.keydownListener || !this.rootElement) return;
+        if (typeof document === 'undefined' || this.keydownListener || !this.rootElement) return;
 
         const isTopTrap = () => trapStack[trapStack.length - 1] === this;
 
-        
         this.keydownListener = (e: KeyboardEvent) => {
-            
             if (!this.isTrapped || !isTopTrap()) return;
 
-            
             if (e.key === 'Escape' || e.key === 'Esc') {
                 if (this.options.onEscape) {
+                    e.stopPropagation();
                     this.options.onEscape(e);
                 }
                 return;
@@ -163,7 +160,6 @@ export class GeaA11y extends Store {
             }
         };
 
-        
         this.focusinListener = (e: FocusEvent) => {
             if (!this.isTrapped || !isTopTrap() || !this.rootElement) return;
 
@@ -178,6 +174,8 @@ export class GeaA11y extends Store {
     }
 
     private removeEventListeners() {
+        if (typeof document === 'undefined') return;
+
         if (this.keydownListener) {
             document.removeEventListener('keydown', this.keydownListener, true);
             this.keydownListener = null;
@@ -211,8 +209,16 @@ export class GeaA11y extends Store {
     }
 }
 
-export function withA11y<T extends new (...args: any) => any>(Base: T) {
-    return class extends Base {
+type AnyConstructor = new (...args: any[]) => any;
+
+export interface WithA11yMixin {
+    _managedA11yInstances: GeaA11y[];
+    createA11y(options?: GeaA11yOptions): GeaA11y;
+    dispose(...args: any[]): void;
+}
+
+export function withA11y<TBase extends AnyConstructor>(Base: TBase) {
+    const Derived = class extends Base {
         _managedA11yInstances: GeaA11y[] = [];
 
         createA11y(options?: GeaA11yOptions): GeaA11y {
@@ -221,17 +227,18 @@ export function withA11y<T extends new (...args: any) => any>(Base: T) {
             return a11y;
         }
 
-        dispose() {
+        dispose(...args: any[]) {
             this._managedA11yInstances.forEach(instance => instance.destroy());
             this._managedA11yInstances = [];
 
-            if ('prototype' in Base && typeof (Base.prototype as any).dispose === 'function') {
-                super.dispose();
-            } else if (typeof super.dispose === 'function') {
-                super.dispose();
+            const superDispose = (super.dispose as unknown);
+            if (typeof superDispose === 'function') {
+                superDispose.apply(this, args);
             }
         }
     };
+
+    return Derived as unknown as TBase & (new (...args: any[]) => WithA11yMixin);
 }
 
 export function _clearA11yGlobalState() {
@@ -242,12 +249,14 @@ export function _clearA11yGlobalState() {
         }
     }
 
-    if (politeLiveRegion && document.body.contains(politeLiveRegion)) {
-        document.body.removeChild(politeLiveRegion);
-        politeLiveRegion = null;
-    }
-    if (assertiveLiveRegion && document.body.contains(assertiveLiveRegion)) {
-        document.body.removeChild(assertiveLiveRegion);
-        assertiveLiveRegion = null;
+    if (typeof document !== 'undefined') {
+        if (politeLiveRegion && document.body.contains(politeLiveRegion)) {
+            document.body.removeChild(politeLiveRegion);
+            politeLiveRegion = null;
+        }
+        if (assertiveLiveRegion && document.body.contains(assertiveLiveRegion)) {
+            document.body.removeChild(assertiveLiveRegion);
+            assertiveLiveRegion = null;
+        }
     }
 }

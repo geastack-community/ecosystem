@@ -43,6 +43,11 @@ export class GeaForm<TValues extends Record<string, unknown> = Record<string, un
             validateOnMount: options.validateOnMount ?? false
         };
 
+        const initialValues = {} as TValues;
+        const initialErrors: Partial<Record<keyof TValues, string | null>> = {};
+        const initialTouched: Partial<Record<keyof TValues, boolean>> = {};
+        const initialDirty: Partial<Record<keyof TValues, boolean>> = {};
+
         (Object.keys(schema) as (keyof TValues)[]).forEach((key) => {
             const config = schema[key];
             const state: InternalFieldState<TValues[typeof key]> = {
@@ -56,15 +61,32 @@ export class GeaForm<TValues extends Record<string, unknown> = Record<string, un
                 validationToken: 0
             };
             this.fields.set(key, state as InternalFieldState);
-            this.values[key] = config.initialValue;
-            this.errors[key] = null;
-            this.touched[key] = false;
-            this.dirty[key] = false;
+            initialValues[key] = config.initialValue;
+            initialErrors[key] = null;
+            initialTouched[key] = false;
+            initialDirty[key] = false;
         });
+
+        this.values = initialValues;
+        this.errors = initialErrors;
+        this.touched = initialTouched;
+        this.dirty = initialDirty;
 
         if (this.options.validateOnMount) {
             void this.validateAll();
         }
+    }
+
+    input<K extends keyof TValues>(name: K, valueOrEvent: TValues[K] | Event): void {
+        const val = (valueOrEvent && typeof valueOrEvent === 'object' && 'target' in valueOrEvent)
+            ? (valueOrEvent.target as HTMLInputElement).value as TValues[K]
+            : valueOrEvent as TValues[K];
+
+        this.setValue(name, val);
+    }
+
+    blur<K extends keyof TValues>(name: K): void {
+        this.setTouched(name, true);
     }
 
     setValue<K extends keyof TValues>(name: K, value: TValues[K], shouldValidate = true): void {
@@ -103,6 +125,8 @@ export class GeaForm<TValues extends Record<string, unknown> = Record<string, un
         const field = this.requireField(name);
         const token = ++field.validationToken;
 
+        let fieldError: string | null = null;
+
         for (const validator of field.validators) {
             const result = await validator(field.value, this.values);
 
@@ -111,17 +135,15 @@ export class GeaForm<TValues extends Record<string, unknown> = Record<string, un
             }
 
             if (result) {
-                field.error = result;
-                this.errors = { ...this.errors, [name]: result };
-                this.recomputeIsValid();
-                return false;
+                fieldError = result;
+                break;
             }
         }
 
-        field.error = null;
-        this.errors = { ...this.errors, [name]: null };
+        field.error = fieldError;
+        this.errors = { ...this.errors, [name]: fieldError };
         this.recomputeIsValid();
-        return true;
+        return fieldError == null;
     }
 
     async validateAll(): Promise<boolean> {
@@ -209,7 +231,7 @@ export class GeaForm<TValues extends Record<string, unknown> = Record<string, un
     }
 }
 
-export function withForm<T extends new (...args: any) => any>(Base: T) {
+export function withForm<T extends new (...args: any[]) => any>(Base: T) {
     return class extends Base {
         _managedForms: GeaForm[] = [];
 
@@ -222,14 +244,12 @@ export function withForm<T extends new (...args: any) => any>(Base: T) {
             return form;
         }
 
-        dispose() {
+        dispose(...args: any[]) {
             this._managedForms.forEach((form) => form.destroy());
             this._managedForms = [];
 
-            if ('prototype' in Base && typeof Base.prototype.dispose === 'function') {
-                super.dispose();
-            } else if (typeof super.dispose === 'function') {
-                super.dispose();
+            if (typeof super.dispose === 'function') {
+                super.dispose(...args);
             }
         }
     };

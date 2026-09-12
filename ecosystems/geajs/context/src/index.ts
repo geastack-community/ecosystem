@@ -1,6 +1,6 @@
 import { Component, Store } from '@geajs/core'
 
-const contextRegistry = new Map<string, Map<symbol, Store>>()
+const contextRegistry = new WeakMap<object, Map<symbol, Store>>()
 
 export interface GeaContext<T extends Store> {
   id: symbol
@@ -24,31 +24,22 @@ export function withContextProvider<TBase extends Constructor<Component>>(
   Base: TBase
 ): TBase & Constructor<ContextProviderMixin> {
   class ContextProvider extends Base implements ContextProviderMixin {
-    #providedContexts = new Map<symbol, Store>()
-
     provideContext<T extends Store>(context: GeaContext<T>, store: T): T {
-      this.#providedContexts.set(context.id, store)
-
-      const componentId = (this as any).id
-      if (componentId) {
-        if (!contextRegistry.has(componentId)) {
-          contextRegistry.set(componentId, new Map())
-        }
-        contextRegistry.get(componentId)!.set(context.id, store)
+      let stores = contextRegistry.get(this)
+      if (!stores) {
+        stores = new Map<symbol, Store>()
+        contextRegistry.set(this, stores)
       }
+      stores.set(context.id, store)
 
       return store
     }
 
-    override dispose() {
-      const componentId = (this as any).id
-      if (componentId && contextRegistry.has(componentId)) {
-        contextRegistry.delete(componentId)
-      }
-      this.#providedContexts.clear()
+    override dispose(...args: any[]) {
+      contextRegistry.delete(this)
 
       if (typeof super.dispose === 'function') {
-        super.dispose()
+        (super.dispose as Function)(...args)
       }
     }
   }
@@ -63,13 +54,13 @@ export function injectContext<T extends Store>(
   let current: any = childComponent
 
   while (current) {
-    if (current.id && contextRegistry.has(current.id)) {
-      const stores = contextRegistry.get(current.id)!
+    if (contextRegistry.has(current)) {
+      const stores = contextRegistry.get(current)!
       if (stores.has(context.id)) {
         return stores.get(context.id) as T
       }
     }
-    current = current.parent || current.props?._parent
+    current = current.parent ?? current.props?._parent
   }
 
   if (context.defaultValue !== undefined) {

@@ -1,6 +1,6 @@
 {
   "name": "@geastack-community/a11y",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "The definitive, Zero-Hooks a11y library for Gea.",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",

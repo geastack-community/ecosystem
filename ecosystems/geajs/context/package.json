@@ -1,6 +1,6 @@
 {
   "name": "@geastack-community/context",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "The definitive, Zero-Hooks context library for Gea.",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -47,10 +47,10 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/geastack-community/ecosystem.git",
-    "directory": "ecosystems/query"
+    "directory": "ecosystems/context"
   },
   "bugs": {
     "url": "https://github.com/geastack-community/ecosystem/issues"
   },
-  "homepage": "https://github.com/geastack-community/ecosystem/tree/main/ecosystems/query#readme"
+  "homepage": "https://github.com/geastack-community/ecosystem/tree/main/ecosystems/context#readme"
 }

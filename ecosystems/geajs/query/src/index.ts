@@ -153,7 +153,7 @@ export class GeaQuery<T = unknown> extends Store {
     }
 
     private setupFocusListener() {
-        if (this.focusListener) return;
+        if (typeof window === 'undefined' || typeof document === 'undefined' || this.focusListener) return;
         this.focusListener = () => {
             if (document.visibilityState === 'visible') {
                 const cached = queryCache.get(this.queryKey);
@@ -200,7 +200,7 @@ export class GeaQuery<T = unknown> extends Store {
     }
 }
 
-export function withQuery<T extends new (...args: any) => any>(Base: T) {
+export function withQuery<T extends new (...args: any[]) => any>(Base: T) {
     return class extends Base {
         _managedQueries: GeaQuery[] = [];
 
@@ -210,14 +210,13 @@ export function withQuery<T extends new (...args: any) => any>(Base: T) {
             return query;
         }
 
-        dispose() {
+        dispose(...args: any[]) {
             this._managedQueries.forEach(query => query.destroy());
             this._managedQueries = [];
-            
-            if ('prototype' in Base && typeof Base.prototype.dispose === 'function') {
-                super.dispose();
-            } else if (typeof super.dispose === 'function') {
-                super.dispose();
+
+            const superDispose = (super.dispose as unknown);
+            if (typeof superDispose === 'function') {
+                (superDispose as Function).apply(this, args);
             }
         }
     };
