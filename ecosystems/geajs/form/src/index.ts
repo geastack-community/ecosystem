@@ -1,4 +1,4 @@
-import { Store } from '@geajs/core';
+import { Component, Store } from '@geajs/core';
 
 export type GeaValidator<T> = (value: T, values: Record<string, unknown>) => string | null | Promise<string | null>;
 
@@ -231,8 +231,19 @@ export class GeaForm<TValues extends Record<string, unknown> = Record<string, un
     }
 }
 
-export function withForm<T extends new (...args: any[]) => any>(Base: T) {
-    return class extends Base {
+export interface WithFormMixin {
+    _managedForms: GeaForm[];
+    createForm<TValues extends Record<string, unknown>>(
+        schema: { [K in keyof TValues]: GeaFieldConfig<TValues[K]> },
+        options?: GeaFormOptions
+    ): GeaForm<TValues>;
+    dispose(...args: any[]): void;
+}
+
+type Constructor<T = Component> = new (...args: any[]) => T;
+
+export function withForm<TBase extends Constructor<Component>>(Base: TBase) {
+    const Derived = class extends Base {
         _managedForms: GeaForm[] = [];
 
         createForm<TValues extends Record<string, unknown>>(
@@ -244,13 +255,13 @@ export function withForm<T extends new (...args: any[]) => any>(Base: T) {
             return form;
         }
 
-        dispose(...args: any[]) {
+        dispose() {
             this._managedForms.forEach((form) => form.destroy());
             this._managedForms = [];
 
-            if (typeof super.dispose === 'function') {
-                super.dispose(...args);
-            }
+            super.dispose();
         }
     };
+
+    return Derived as unknown as TBase & (new (...args: any[]) => WithFormMixin);
 }

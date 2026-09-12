@@ -1,4 +1,4 @@
-import { Store } from '@geajs/core';
+import { Component, Store } from '@geajs/core';
 
 const queryCache = new Map<string, { data: unknown; updateAt: number }>();
 const queryInstances = new Map<string, Set<GeaQuery<unknown>>>();
@@ -200,8 +200,16 @@ export class GeaQuery<T = unknown> extends Store {
     }
 }
 
-export function withQuery<T extends new (...args: any[]) => any>(Base: T) {
-    return class extends Base {
+export interface WithQueryMixin {
+    _managedQueries: GeaQuery[];
+    createQuery<TData>(queryKey: string, queryFn: () => Promise<TData>, options?: GeaQueryOptions): GeaQuery<TData>;
+    dispose(...args: any[]): void;
+}
+
+type Constructor<T = Component> = new (...args: any[]) => T;
+
+export function withQuery<TBase extends Constructor<Component>>(Base: TBase) {
+    const Derived =  class extends Base {
         _managedQueries: GeaQuery[] = [];
 
         createQuery<TData>(queryKey: string, queryFn: () => Promise<TData>, options?: GeaQueryOptions): GeaQuery<TData> {
@@ -214,12 +222,11 @@ export function withQuery<T extends new (...args: any[]) => any>(Base: T) {
             this._managedQueries.forEach(query => query.destroy());
             this._managedQueries = [];
 
-            const superDispose = (super.dispose as unknown);
-            if (typeof superDispose === 'function') {
-                (superDispose as Function).apply(this, args);
-            }
+            super.dispose();
         }
     };
+
+    return Derived as unknown as TBase & (new (...args: any[]) => WithQueryMixin);
 }
 
 export function _clearQueryCache() {

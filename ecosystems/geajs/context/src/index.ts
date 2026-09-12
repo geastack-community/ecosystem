@@ -38,9 +38,7 @@ export function withContextProvider<TBase extends Constructor<Component>>(
     override dispose(...args: any[]) {
       contextRegistry.delete(this)
 
-      if (typeof super.dispose === 'function') {
-        (super.dispose as Function)(...args)
-      }
+      super.dispose()
     }
   }
 

@@ -1,4 +1,4 @@
-import { Store } from '@geajs/core';
+import { Component, Store } from '@geajs/core';
 
 export interface GeaA11yOptions {
     trapFocus?: boolean;
@@ -209,7 +209,7 @@ export class GeaA11y extends Store {
     }
 }
 
-type AnyConstructor = new (...args: any[]) => any;
+type Constructor<T = Component> = new (...args: any[]) => T;
 
 export interface WithA11yMixin {
     _managedA11yInstances: GeaA11y[];
@@ -217,7 +217,7 @@ export interface WithA11yMixin {
     dispose(...args: any[]): void;
 }
 
-export function withA11y<TBase extends AnyConstructor>(Base: TBase) {
+export function withA11y<TBase extends Constructor<Component>>(Base: TBase) {
     const Derived = class extends Base {
         _managedA11yInstances: GeaA11y[] = [];
 
@@ -227,14 +227,11 @@ export function withA11y<TBase extends AnyConstructor>(Base: TBase) {
             return a11y;
         }
 
-        dispose(...args: any[]) {
+        dispose() {
             this._managedA11yInstances.forEach(instance => instance.destroy());
             this._managedA11yInstances = [];
 
-            const superDispose = (super.dispose as unknown);
-            if (typeof superDispose === 'function') {
-                superDispose.apply(this, args);
-            }
+            super.dispose();
         }
     };
 
