@@ -1,8 +1,21 @@
-type AnyConstructor = new (...args: any[]) => any;
+import { Component, Store } from "@geajs/core";
 
-export type UnionMixins<T extends any[], Base> =
-    T extends [...infer Head, infer Last extends (b: any) => any]
-    ? UnionMixins<Head, ReturnType<Last>>
+export type Constructor<T = any> = new (...args: any[]) => T;
+export type AnyConstructor = Constructor;
+export type StoreConstructor<T = Store> = Constructor<T>;
+export type ComponentConstructor<T = Component> = Constructor<T>;
+export type MixinConstructor<
+    TBase extends AnyConstructor,
+    Mixin
+> = new (...args: ConstructorParameters<TBase>) => Mixin;
+
+export interface Disposable {
+  dispose(): void;
+}
+
+export type UnionMixins<M extends Mixin[], Base extends AnyConstructor> = 
+    M extends [infer First extends Mixin, ...infer Rest extends Mixin[]]
+    ? ReturnType<First> & UnionMixins<Rest, Base>
     : Base;
 
 export type Mixin = (Base: any) => any;

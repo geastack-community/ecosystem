@@ -1,6 +1,6 @@
 {
   "name": "@geastack-community/utils",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "The definitive, Zero-Hooks utility library for Gea.",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
