@@ -1,10 +1,14 @@
 import { describe, it, expect } from 'vitest'
-import { Component, Store } from '@geajs/core'
+import { Component, GEA_PARENT_COMPONENT, Store } from '@geajs/core'
 import {
   createContext,
   withContextProvider,
   injectContext,
 } from '../src/index'
+
+function linkAsParent(child: Component, parent: Component) {
+  ;(child as any)[GEA_PARENT_COMPONENT] = parent
+}
 
 class TestStore extends Store {
   count = 0
@@ -35,8 +39,7 @@ describe('GeaContext', () => {
 
     const parent = new ParentComponent();
     const child = new ChildComponent();
-
-    ;(child as any).parent = parent;
+    linkAsParent(child, parent)
 
     expect(child.store).toBeDefined();
     expect(child.store.count).toBe(0);
@@ -50,11 +53,11 @@ describe('GeaContext', () => {
 
     const parent1 = new ParentComponent();
     const child1 = new ChildComponent();
-    (child1 as any).parent = parent1;
+    linkAsParent(child1, parent1)
 
     const parent2 = new ParentComponent();
     const child2 = new ChildComponent();
-    (child2 as any).parent = parent2;
+    linkAsParent(child2, parent2)
 
     child1.store.increment();
 
@@ -72,8 +75,8 @@ describe('GeaContext', () => {
     const middle = new MiddleComponent();
     const child = new ChildComponent();
 
-    (middle as any).parent = parent;
-    (child as any).parent = middle;
+    linkAsParent(middle, parent)
+    linkAsParent(child, middle)
 
     expect(child.store).toBe(parent.store);
   })
@@ -111,7 +114,7 @@ describe('GeaContext', () => {
 
     const parent = new ParentComponent();
     const child = new ChildComponent();
-    (child as any).parent = parent;
+    linkAsParent(child, parent)
 
     expect(child.store).toBeDefined();
 

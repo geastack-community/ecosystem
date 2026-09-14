@@ -1,4 +1,4 @@
-import { Component, Store } from '@geajs/core'
+import { Component, GEA_PARENT_COMPONENT, GEA_STORE_ROOT, Store } from '@geajs/core'
 
 const contextRegistry = new WeakMap<object, Map<symbol, Store>>()
 
@@ -20,28 +20,32 @@ export interface ContextProviderMixin {
   provideContext<T extends Store>(context: GeaContext<T>, store: T): T
 }
 
+function normalizeKey(obj: any): object {
+  return obj?.[GEA_STORE_ROOT] ?? obj
+}
+
 export function withContextProvider<TBase extends Constructor<Component>>(
   Base: TBase
 ): TBase & Constructor<ContextProviderMixin> {
   class ContextProvider extends Base implements ContextProviderMixin {
     provideContext<T extends Store>(context: GeaContext<T>, store: T): T {
-      let stores = contextRegistry.get(this)
+      const key = normalizeKey(this)
+      let stores = contextRegistry.get(key)
       if (!stores) {
         stores = new Map<symbol, Store>()
-        contextRegistry.set(this, stores)
+        contextRegistry.set(key, stores)
       }
       stores.set(context.id, store)
-
       return store
     }
 
     override dispose(...args: any[]) {
-      contextRegistry.delete(this)
-
-      super.dispose()
+      contextRegistry.delete(normalizeKey(this))
+      if (typeof super.dispose === 'function') {
+        (super.dispose as Function)(...args)
+      }
     }
   }
-
   return ContextProvider as unknown as TBase & Constructor<ContextProviderMixin>
 }
 
@@ -52,13 +56,12 @@ export function injectContext<T extends Store>(
   let current: any = childComponent
 
   while (current) {
-    if (contextRegistry.has(current)) {
-      const stores = contextRegistry.get(current)!
-      if (stores.has(context.id)) {
-        return stores.get(context.id) as T
-      }
+    const key = normalizeKey(current)
+    const stores = contextRegistry.get(key)
+    if (stores?.has(context.id)) {
+      return stores.get(context.id) as T
     }
-    current = current.parent ?? current.props?._parent
+    current = current[GEA_PARENT_COMPONENT]
   }
 
   if (context.defaultValue !== undefined) {
