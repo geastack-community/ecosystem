@@ -16,7 +16,6 @@ Designed from the ground up to respect Gea's core philosophy: **No Hooks, pure O
 
 ```bash
 pnpm add @geastack-community/query
-
 ```
 
 ## Quick Start
