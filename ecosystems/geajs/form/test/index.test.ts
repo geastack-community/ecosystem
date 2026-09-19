@@ -1,5 +1,11 @@
 import { describe, it, expect, vi } from 'vitest';
-import { GeaForm, withForm, type GeaFieldConfig } from '../src/index';
+import { GeaForm, managedForms, withForm, type GeaFieldConfig } from '../src/index';
+import { Component } from '@geajs/core';
+
+interface ManageProperty {
+    [managedForms]: GeaForm[];
+
+};
 
 vi.mock('@geajs/core', () => {
     class Store {
@@ -424,33 +430,37 @@ describe('GeaForm — destroy', () => {
 });
 
 describe('withForm mixin', () => {
-    class Component {
-        dispose() {
-            
-        }
-    }
-
     it('injects createForm and tracks created forms', () => {
         class MyComponent extends withForm(Component) {}
         const instance = new MyComponent();
 
-        const form = instance.createForm<LoginValues>(makeLoginSchema());
+        type TestInstance = typeof instance & ManageProperty;
+
+        const testInstance = instance as TestInstance;
+
+        const form = testInstance.createForm<LoginValues>(makeLoginSchema());
 
         expect(form).toBeInstanceOf(GeaForm);
-        expect(instance._managedForms).toHaveLength(1);
-        expect(instance._managedForms[0]).toBe(form);
+        expect(testInstance[managedForms]).toHaveLength(1);
+        expect(testInstance[managedForms][0]).toBe(form);
     });
 
     it('destroys all managed forms and clears the registry on dispose', () => {
         class MyComponent extends withForm(Component) {}
         const instance = new MyComponent();
-        const form = instance.createForm<LoginValues>(makeLoginSchema());
+
+        type TestInstance = typeof instance & ManageProperty;
+
+        const testInstance = instance as TestInstance;
+
+        const form = testInstance.createForm<LoginValues>(makeLoginSchema());
         const destroySpy = vi.spyOn(form, 'destroy');
 
-        instance.dispose();
+
+        testInstance.dispose();
 
         expect(destroySpy).toHaveBeenCalledTimes(1);
-        expect(instance._managedForms).toHaveLength(0);
+        expect(testInstance[managedForms]).toHaveLength(0);
     });
 
     it('calls the base class dispose() after cleaning up forms', () => {
@@ -469,16 +479,20 @@ describe('withForm mixin', () => {
         class MyComponent extends withForm(Component) {}
         const instance = new MyComponent();
 
-        const loginForm = instance.createForm<LoginValues>(makeLoginSchema());
-        const profileForm = instance.createForm<{ nickname: string }>({
+        type TestInstance = typeof instance & ManageProperty;
+
+        const testInstance = instance as TestInstance;
+
+        const loginForm = testInstance.createForm<LoginValues>(makeLoginSchema());
+        const profileForm = testInstance.createForm<{ nickname: string }>({
             nickname: { initialValue: '' }
         });
         const loginDestroySpy = vi.spyOn(loginForm, 'destroy');
         const profileDestroySpy = vi.spyOn(profileForm, 'destroy');
 
-        expect(instance._managedForms).toHaveLength(2);
+        expect(testInstance[managedForms]).toHaveLength(2);
 
-        instance.dispose();
+        testInstance.dispose();
 
         expect(loginDestroySpy).toHaveBeenCalledTimes(1);
         expect(profileDestroySpy).toHaveBeenCalledTimes(1);

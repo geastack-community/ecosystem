@@ -231,8 +231,10 @@ export class GeaForm<TValues extends Record<string, unknown> = Record<string, un
     }
 }
 
+/** @internal */
+export const managedForms = Symbol("managedForms");
+
 export interface WithFormMixin {
-    _managedForms: GeaForm[];
     createForm<TValues extends Record<string, unknown>>(
         schema: { [K in keyof TValues]: GeaFieldConfig<TValues[K]> },
         options?: GeaFormOptions
@@ -244,20 +246,21 @@ type Constructor<T = Component> = new (...args: any[]) => T;
 
 export function withForm<TBase extends Constructor<Component>>(Base: TBase) {
     const Derived = class extends Base {
-        _managedForms: GeaForm[] = [];
+        /** @internal */
+        [managedForms]: GeaForm[] = [];
 
         createForm<TValues extends Record<string, unknown>>(
             schema: { [K in keyof TValues]: GeaFieldConfig<TValues[K]> },
             options?: GeaFormOptions
         ): GeaForm<TValues> {
             const form = new GeaForm<TValues>(schema, options);
-            this._managedForms.push(form as unknown as GeaForm);
+            this[managedForms].push(form as unknown as GeaForm);
             return form;
         }
 
         dispose() {
-            this._managedForms.forEach((form) => form.destroy());
-            this._managedForms = [];
+            this[managedForms].forEach((form) => form.destroy());
+            this[managedForms] = [];
 
             super.dispose();
         }

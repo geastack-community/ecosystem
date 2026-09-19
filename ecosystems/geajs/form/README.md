@@ -20,7 +20,7 @@ Designed from the ground up to respect Gea's core philosophy: **No Hooks, pure O
 ## Installation
 
 ```bash
-pnpm add gea-form
+pnpm add @geastack-community/form
 
 ```
 
@@ -30,7 +30,7 @@ Wrap your Gea component with the `withForm` mixin. Use `this.createForm` to inst
 
 ```typescript
 import { Component } from '@geajs/core';
-import { withForm } from 'gea-form';
+import { withForm } from '@geastack-community/form';
 
 interface LoginValues {
   email: string;

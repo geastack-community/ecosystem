@@ -212,24 +212,25 @@ export class GeaA11y extends Store {
 type Constructor<T = Component> = new (...args: any[]) => T;
 
 export interface WithA11yMixin {
-    _managedA11yInstances: GeaA11y[];
     createA11y(options?: GeaA11yOptions): GeaA11y;
     dispose(...args: any[]): void;
 }
 
+const managedA11yInstances = Symbol("managedA11yInstances");
+
 export function withA11y<TBase extends Constructor<Component>>(Base: TBase) {
     const Derived = class extends Base {
-        _managedA11yInstances: GeaA11y[] = [];
+        [managedA11yInstances]: GeaA11y[] = [];
 
         createA11y(options?: GeaA11yOptions): GeaA11y {
             const a11y = new GeaA11y(options);
-            this._managedA11yInstances.push(a11y);
+            this[managedA11yInstances].push(a11y);
             return a11y;
         }
 
         dispose() {
-            this._managedA11yInstances.forEach(instance => instance.destroy());
-            this._managedA11yInstances = [];
+            this[managedA11yInstances].forEach(instance => instance.destroy());
+            this[managedA11yInstances] = [];
 
             super.dispose();
         }

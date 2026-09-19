@@ -1,10 +1,7 @@
 // @vitest-environment happy-dom
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { withQuery, _clearQueryCache } from '../src/index';
-
-class MockComponent {
-    dispose() {}
-}
+import { Component } from '@geajs/core';
 
 describe('withQuery Mixin', () => {
     beforeEach(() => {
@@ -13,7 +10,7 @@ describe('withQuery Mixin', () => {
     });
 
     it('When `dispose()` is called, all managed queries are destroyed.', async () => {
-        const MixedComponent = withQuery(MockComponent);
+        const MixedComponent = withQuery(Component);
         const instance = new MixedComponent();
 
         const queryFn = vi.fn().mockResolvedValue('polling-data');
