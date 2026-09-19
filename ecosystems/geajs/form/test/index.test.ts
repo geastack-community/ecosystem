@@ -4,7 +4,6 @@ import { Component } from '@geajs/core';
 
 interface ManageProperty {
     [managedForms]: GeaForm[];
-
 };
 
 vi.mock('@geajs/core', () => {
