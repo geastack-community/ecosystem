@@ -35,8 +35,8 @@ pnpm typecheck
 You can run scripts for a specific package from the root using `--filter`:
 
 ```bash
-# Example: Build or test only the a11y package
-pnpm --filter ./ecosystems/a11y test
+# Example: Build or test only the geajs a11y package
+pnpm --filter ./ecosystems/geajs/a11y test
 
 ```
 
