@@ -20,6 +20,21 @@ export type UnionMixins<M extends Mixin[], Base extends AnyConstructor> =
 
 export type Mixin = (Base: any) => any;
 
+/**
+ * Use this when applying multiple mixins.
+ * @param args List the mixins to apply, and pass the base class last.
+ * @example
+ * ```ts
+ * import { Component } from '@geajs/core';
+ * import { withForm } from '@geastack-community/form';
+ * import { withQuery } from '@geastack-community/query';
+ * import { withMixins } from '@geastack-community/utils';
+ * 
+ * class MyComponent extends withMixins(withForm, withQuery, Component) {
+ *  // ...
+ * }
+ * ```
+ */
 export function withMixins<M extends Mixin[], B extends AnyConstructor>(
     ...args: [...M, B]
 ): UnionMixins<M, B> {
