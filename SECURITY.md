@@ -10,10 +10,9 @@ We primarily focus security updates on the latest major version of each package.
 
 | Package | Version | Supported |
 | :--- | :--- | :--- |
-| `gea-a11y` | 1.x | ✅ Yes |
-| `gea-query` | 1.x | ✅ Yes |
-| `gea-form` | 1.x | ✅ Yes |
-| `gea-context` | 1.x | ✅ Yes |
+| `a11y@geajs` | 1.x | ✅ Yes |
+| `query@geajs` | 1.x | ✅ Yes |
+| `form@geajs` | 1.x | ✅ Yes |
 
 ## Reporting a Vulnerability
 
