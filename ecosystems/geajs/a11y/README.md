@@ -32,9 +32,10 @@ Wrap your Gea component with the `withA11y` mixin. Use `this.createA11y` to inst
 ```typescript
 import { Component } from '@geajs/core';
 import { withA11y } from '@geastack-community/a11y';
+import type { GeaA11y } from '@geastack-community/a11y';
 
 export default class ModalDialog extends withA11y(Component) {
-  private a11y!: any;
+  a11y!: GeaA11y;
 
   created() {
     // 💡 Creates an a11y instance. Automatically cleaned up when the component is disposed.
@@ -46,29 +47,28 @@ export default class ModalDialog extends withA11y(Component) {
     });
   }
 
-  mounted() {
-    const modalElement = this.el.querySelector('.modal-root') as HTMLElement;
+  onAfterRender() {
+    const modalElement = this.$('.modal-root');
     if (modalElement) {
       this.a11y.init(modalElement);
     }
   }
 
-  private closeModal() {
+  closeModal() {
     this.a11y.announce('Modal closed', 'polite');
     // Close logic here...
   }
 
   template() {
-    return `
+    return (
       <div class="modal-root" role="dialog" aria-modal="true">
         <h2>Accessible Dialog</h2>
         <p>Focus is safely trapped inside this modal.</p>
-        <button onclick="${() => this.closeModal()}">Close</button>
+        <button click={() => this.closeModal()}>Close</button>
       </div>
-    `;
+    );
   }
 }
-
 ```
 
 ## API Reference
