@@ -31,6 +31,7 @@ Wrap your Gea component with the `withForm` mixin. Use `this.createForm` to inst
 ```typescript
 import { Component } from '@geajs/core';
 import { withForm } from '@geastack-community/form';
+import type { GeaForm } from '@geastack-community/form';
 
 interface LoginValues {
   email: string;
@@ -38,7 +39,7 @@ interface LoginValues {
 }
 
 export default class LoginPage extends withForm(Component) {
-  private loginForm!: any;
+  loginForm!: GeaForm<LoginValues>;
 
   created() {
     // 💡 Creates a form store. Automatically cleaned up when the component is disposed.
@@ -69,20 +70,19 @@ export default class LoginPage extends withForm(Component) {
     const email = this.loginForm.getFieldProps('email');
     const password = this.loginForm.getFieldProps('password');
 
-    return `
+    return (
       <form>
-        <input value="${email.value}" oninput="${(e: any) => email.onChange(e.target.value)}" onblur="${email.onBlur}" />
-        ${email.touched && email.error ? `<span>${email.error}</span>` : ''}
+        <input value={email.value} input={(e) => email.onChange(e.target.value)} blur={email.onBlur} />
+        {email.touched && email.error && <span>{email.error}</span>}
 
-        <input type="password" value="${password.value}" oninput="${(e: any) => password.onChange(e.target.value)}" onblur="${password.onBlur}" />
-        ${password.touched && password.error ? `<span>${password.error}</span>` : ''}
+        <input type="password" value={password.value} input={(e) => password.onChange(e.target.value)} blur={password.onBlur} />
+        {password.touched && password.error && <span>{password.error}</span>}
 
-        <button onclick="${() => this.submit()}" disabled="${this.loginForm.isSubmitting}">Log in</button>
+        <button click={() => this.submit()} disabled={this.loginForm.isSubmitting}>Log in</button>
       </form>
-    `;
+    );
   }
 }
-
 ```
 
 ## API Reference
