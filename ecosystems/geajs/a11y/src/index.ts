@@ -211,18 +211,27 @@ export class GeaA11y extends Store {
 
 type Constructor<T = Component> = new (...args: any[]) => T;
 
-export interface WithA11yMixin {
-    createA11y(options?: GeaA11yOptions): GeaA11y;
-    dispose(...args: any[]): void;
-}
+export type WithA11yMixin<K extends string = 'createA11y'> = {
+    [P in K]: (
+        options?: GeaA11yOptions
+    ) => GeaA11y;
+} & {
+    dispose(): void;
+};
 
 const managedA11yInstances = Symbol("managedA11yInstances");
 
-export function withA11y<TBase extends Constructor<Component>>(Base: TBase) {
+export function withA11y<
+    TBase extends Constructor<Component>,
+    K extends string = 'createA11y'
+>(
+    Base: TBase,
+    creatorName: K = 'createA11y' as K
+) {
     const Derived = class extends Base {
         [managedA11yInstances]: GeaA11y[] = [];
 
-        createA11y(options?: GeaA11yOptions): GeaA11y {
+        [creatorName](options?: GeaA11yOptions): GeaA11y {
             const a11y = new GeaA11y(options);
             this[managedA11yInstances].push(a11y);
             return a11y;
@@ -236,7 +245,7 @@ export function withA11y<TBase extends Constructor<Component>>(Base: TBase) {
         }
     };
 
-    return Derived as unknown as TBase & (new (...args: any[]) => WithA11yMixin);
+    return Derived as unknown as TBase & (new (...args: any[]) => WithA11yMixin<K>);
 }
 
 export function _clearA11yGlobalState() {

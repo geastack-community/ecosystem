@@ -234,22 +234,29 @@ export class GeaForm<TValues extends Record<string, unknown> = Record<string, un
 /** @internal */
 export const managedForms = Symbol("managedForms");
 
-export interface WithFormMixin {
-    createForm<TValues extends Record<string, unknown>>(
+export type WithFormMixin<K extends string = 'createForm'> = {
+    [P in K]: <TValues extends Record<string, unknown>>(
         schema: { [K in keyof TValues]: GeaFieldConfig<TValues[K]> },
         options?: GeaFormOptions
-    ): GeaForm<TValues>;
+    ) => GeaForm<TValues>;
+} & {
     dispose(...args: any[]): void;
-}
+};
 
 type Constructor<T = Component> = new (...args: any[]) => T;
 
-export function withForm<TBase extends Constructor<Component>>(Base: TBase) {
+export function withForm<
+    TBase extends Constructor<Component>,
+    K extends string = 'createForm'
+>(
+    Base: TBase,
+    creatorName: K = 'createForm' as K
+) {
     const Derived = class extends Base {
         /** @internal */
         [managedForms]: GeaForm[] = [];
 
-        createForm<TValues extends Record<string, unknown>>(
+        [creatorName]<TValues extends Record<string, unknown>>(
             schema: { [K in keyof TValues]: GeaFieldConfig<TValues[K]> },
             options?: GeaFormOptions
         ): GeaForm<TValues> {
@@ -266,5 +273,5 @@ export function withForm<TBase extends Constructor<Component>>(Base: TBase) {
         }
     };
 
-    return Derived as unknown as TBase & (new (...args: any[]) => WithFormMixin);
+    return Derived as unknown as TBase & (new (...args: any[]) => WithFormMixin<K>);
 }

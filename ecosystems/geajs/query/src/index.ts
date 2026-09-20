@@ -200,22 +200,33 @@ export class GeaQuery<T = unknown> extends Store {
     }
 }
 
-export interface WithQueryMixin {
-    createQuery<TData>(queryKey: string, queryFn: () => Promise<TData>, options?: GeaQueryOptions): GeaQuery<TData>;
-    dispose(...args: any[]): void;
-}
+export type WithQueryMixin<K extends string = 'createQuery'> = {
+    [P in K]: <TData>(
+        queryKey: string,
+        queryFn: () => Promise<TData>,
+        options?: GeaQueryOptions
+    ) => GeaQuery<TData>;
+} & {
+    dispose(): void;
+};
 
 type Constructor<T = Component> = new (...args: any[]) => T;
 
 /** @internal */
 export const managedQueries = Symbol("managedQueries");
 
-export function withQuery<TBase extends Constructor<Component>>(Base: TBase) {
+export function withQuery<
+    TBase extends Constructor<Component>,
+    K extends string = 'createQuery'
+>(
+    Base: TBase,
+    creatorName: K = 'createQuery' as K
+) {
     const Derived =  class extends Base {
         /** @internal */
         [managedQueries]: GeaQuery[] = [];
 
-        createQuery<TData>(queryKey: string, queryFn: () => Promise<TData>, options?: GeaQueryOptions): GeaQuery<TData> {
+        [creatorName]<TData>(queryKey: string, queryFn: () => Promise<TData>, options?: GeaQueryOptions): GeaQuery<TData> {
             const query = new GeaQuery(queryKey, queryFn, options);
             this[managedQueries].push(query);
             return query;
@@ -229,7 +240,7 @@ export function withQuery<TBase extends Constructor<Component>>(Base: TBase) {
         }
     };
 
-    return Derived as unknown as TBase & (new (...args: any[]) => WithQueryMixin);
+    return Derived as unknown as TBase & (new (...args: any[]) => WithQueryMixin<K>);
 }
 
 export function _clearQueryCache() {
