@@ -30,6 +30,7 @@ Wrap your Gea component with the `withQuery` mixin. Use `this.createQuery` to in
 ```typescript
 import { Component } from '@geajs/core';
 import { withQuery } from '@geastack-community/query';
+import type { GeaQuery } from '@geastack-community/query';
 
 interface User {
   id: number;
@@ -37,7 +38,7 @@ interface User {
 }
 
 export default class UserProfile extends withQuery(Component) {
-  private userQuery!: any;
+  userQuery!: GeaQuery<User>;
 
   created() {
     // 💡 Creates a query store. Automatically cleaned up when the component is disposed.
@@ -45,7 +46,7 @@ export default class UserProfile extends withQuery(Component) {
       'userData',
       () => fetch('/api/user').then((res) => res.json()),
       {
-        staleTime: 30000,          // 30 seconds
+        staleTime: 30000,           // 30 seconds
         refetchOnWindowFocus: true, // Refetch when window regains focus
         refetchInterval: 5000       // Polling every 5 seconds (optional)
       }
@@ -53,20 +54,19 @@ export default class UserProfile extends withQuery(Component) {
   }
 
   template() {
-    if (this.userQuery.isLoading) return '<div>Loading user profile...</div>';
-    if (this.userQuery.error) return '<div>Failed to load user.</div>';
+    if (this.userQuery.isLoading) return <div>Loading user profile...</div>;
+    if (this.userQuery.error) return <div>Failed to load user.</div>;
 
     const user = this.userQuery.data as User;
-    return `
+    return (
       <div>
         <h1>Profile</h1>
-        <p>Name: ${user.name}</p>
-        <button onclick="${() => this.userQuery.fetch()}">Manual Refresh</button>
+        <p>Name: {user.name}</p>
+        <button click={() => this.userQuery.fetch()}>Manual Refresh</button>
       </div>
-    `;
+    );
   }
 }
-
 ```
 
 ## API Reference
