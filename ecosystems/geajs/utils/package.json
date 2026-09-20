@@ -20,10 +20,7 @@
     "build": "pnpm build:js && pnpm build:dts",
     "build:js": "esbuild src/index.ts --bundle --packages=external --minify --format=cjs --outfile=dist/index.cjs && esbuild src/index.ts --bundle --packages=external --minify --format=esm --outfile=dist/index.js",
     "build:dts": "dts-bundle-generator -o dist/index.d.ts src/index.ts --no-check",
-    "prepublishOnly": "pnpm build",
-    "docs:dev": "vitepress dev docs",
-    "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "prepublishOnly": "pnpm build"
   },
   "keywords": [
     "gea",
@@ -40,8 +37,7 @@
     "@geajs/core": "^1.4.0"
   },
   "devDependencies": {
-    "@geajs/core": "^1.4.0",
-    "vitepress": "^1.6.4"
+    "@geajs/core": "^1.4.0"
   },
   "repository": {
     "type": "git",
