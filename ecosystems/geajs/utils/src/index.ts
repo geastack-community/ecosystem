@@ -7,7 +7,7 @@ export type ComponentConstructor<T = Component> = Constructor<T>;
 export type MixinConstructor<
     TBase extends AnyConstructor,
     Mixin
-> = new (...args: ConstructorParameters<TBase>) => Mixin;
+> = new (...args: ConstructorParameters<TBase>) => InstanceType<TBase> & Mixin;
 
 export interface Disposable {
   dispose(): void;

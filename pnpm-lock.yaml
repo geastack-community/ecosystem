@@ -35,18 +35,27 @@ importers:
       '@geajs/core':
         specifier: ^1.4.0
         version: 1.4.0
+      '@geastack-community/utils':
+        specifier: workspace:*
+        version: link:../utils
 
   ecosystems/geajs/form:
     devDependencies:
       '@geajs/core':
         specifier: ^1.4.0
         version: 1.4.0
+      '@geastack-community/utils':
+        specifier: workspace:*
+        version: link:../utils
 
   ecosystems/geajs/query:
     devDependencies:
       '@geajs/core':
         specifier: ^1.4.0
         version: 1.4.0
+      '@geastack-community/utils':
+        specifier: workspace:*
+        version: link:../utils
 
   ecosystems/geajs/utils:
     devDependencies:

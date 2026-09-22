@@ -1,6 +1,6 @@
 {
   "name": "@geastack-community/form",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "The definitive, Zero-Hooks form library for Gea.",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -35,10 +35,12 @@
   "author": "GeaStack Community",
   "license": "MIT",
   "peerDependencies": {
-    "@geajs/core": "^1.4.0"
+    "@geajs/core": "^1.4.0",
+    "@geastack-community/utils": "workspace:*"
   },
   "devDependencies": {
-    "@geajs/core": "^1.4.0"
+    "@geajs/core": "^1.4.0",
+    "@geastack-community/utils": "workspace:*"
   },
   "repository": {
     "type": "git",

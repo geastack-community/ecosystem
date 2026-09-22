@@ -1,4 +1,5 @@
-import { Component, Store } from '@geajs/core';
+import { Store } from '@geajs/core';
+import { ComponentConstructor, Disposable, MixinConstructor } from '@geastack-community/utils';
 
 const queryCache = new Map<string, { data: unknown; updateAt: number }>();
 const queryInstances = new Map<string, Set<GeaQuery<unknown>>>();
@@ -208,23 +209,19 @@ export type WithQueryMixin<K extends string = typeof creator> = {
         queryFn: () => Promise<TData>,
         options?: GeaQueryOptions
     ) => GeaQuery<TData>;
-} & {
-    dispose(): void;
-};
-
-type Constructor<T = Component> = new (...args: any[]) => T;
+} & Disposable;
 
 /** @internal */
 export const managedQueries = Symbol("managedQueries");
 
 export function withQuery<
-    TBase extends Constructor<Component>,
+    TBase extends ComponentConstructor,
     K extends string = typeof creator
 >(
     Base: TBase,
     creatorName: K = creator as K
 ) {
-    const Derived =  class extends Base {
+    const Derived =  class extends Base implements Disposable {
         /** @internal */
         [managedQueries]: GeaQuery[] = [];
 
@@ -242,7 +239,7 @@ export function withQuery<
         }
     };
 
-    return Derived as unknown as TBase & (new (...args: any[]) => WithQueryMixin<K>);
+    return Derived as unknown as TBase & MixinConstructor<TBase, WithQueryMixin<K>>;
 }
 
 export function _clearQueryCache() {
