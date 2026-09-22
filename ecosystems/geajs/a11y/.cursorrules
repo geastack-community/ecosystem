@@ -9,12 +9,12 @@ When injecting accessibility and focus-trap capabilities into a Gea component, u
 ```typescript
 import { Component } from '@geajs/core';
 import { withA11y } from '@geastack-community/a11y';
+import type { GeaA11y } from '@geastack-community/a11y';
 
 class ModalDialog extends withA11y(Component) {
-  private a11y!: any;
+  a11y!: GeaA11y;
 
-  constructor() {
-    super();
+  created() {
     this.a11y = this.createA11y({
       trapFocus: true,
       autoFocus: true,
@@ -23,17 +23,13 @@ class ModalDialog extends withA11y(Component) {
     });
   }
 
-  mounted() {
-    const modalEl = this.el.querySelector('.modal-root') as HTMLElement;
+  onAfterRender() {
+    const modalEl = this.$('.modal-root');
     if (modalEl) this.a11y.init(modalEl);
   }
 
-  private closeModal() {
+  closeModal() {
     this.a11y.announce('Modal closed', 'polite');
-  }
-
-  override dispose() {
-    super.dispose();
   }
 }
 ```
