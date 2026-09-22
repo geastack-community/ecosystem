@@ -200,7 +200,9 @@ export class GeaQuery<T = unknown> extends Store {
     }
 }
 
-export type WithQueryMixin<K extends string = 'createQuery'> = {
+const creator = 'createQuery';
+
+export type WithQueryMixin<K extends string = typeof creator> = {
     [P in K]: <TData>(
         queryKey: string,
         queryFn: () => Promise<TData>,
@@ -217,10 +219,10 @@ export const managedQueries = Symbol("managedQueries");
 
 export function withQuery<
     TBase extends Constructor<Component>,
-    K extends string = 'createQuery'
+    K extends string = typeof creator
 >(
     Base: TBase,
-    creatorName: K = 'createQuery' as K
+    creatorName: K = creator as K
 ) {
     const Derived =  class extends Base {
         /** @internal */

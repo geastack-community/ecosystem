@@ -209,9 +209,11 @@ export class GeaA11y extends Store {
     }
 }
 
+const creator = 'createA11y';
+
 type Constructor<T = Component> = new (...args: any[]) => T;
 
-export type WithA11yMixin<K extends string = 'createA11y'> = {
+export type WithA11yMixin<K extends string = typeof creator> = {
     [P in K]: (
         options?: GeaA11yOptions
     ) => GeaA11y;
@@ -223,10 +225,10 @@ const managedA11yInstances = Symbol("managedA11yInstances");
 
 export function withA11y<
     TBase extends Constructor<Component>,
-    K extends string = 'createA11y'
+    K extends string = typeof creator
 >(
     Base: TBase,
-    creatorName: K = 'createA11y' as K
+    creatorName: K = creator as K
 ) {
     const Derived = class extends Base {
         [managedA11yInstances]: GeaA11y[] = [];

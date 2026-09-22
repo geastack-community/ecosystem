@@ -231,10 +231,12 @@ export class GeaForm<TValues extends Record<string, unknown> = Record<string, un
     }
 }
 
+const creator = 'createForm';
+
 /** @internal */
 export const managedForms = Symbol("managedForms");
 
-export type WithFormMixin<K extends string = 'createForm'> = {
+export type WithFormMixin<K extends string = typeof creator> = {
     [P in K]: <TValues extends Record<string, unknown>>(
         schema: { [K in keyof TValues]: GeaFieldConfig<TValues[K]> },
         options?: GeaFormOptions
@@ -247,10 +249,10 @@ type Constructor<T = Component> = new (...args: any[]) => T;
 
 export function withForm<
     TBase extends Constructor<Component>,
-    K extends string = 'createForm'
+    K extends string = typeof creator
 >(
     Base: TBase,
-    creatorName: K = 'createForm' as K
+    creatorName: K = creator as K
 ) {
     const Derived = class extends Base {
         /** @internal */
