@@ -1,4 +1,4 @@
-# gea-form
+# @geastack-community/form
 
 > Geastack Community is an independent community project and is not
 > affiliated with or endorsed by Gea. Gea has granted permission for the
