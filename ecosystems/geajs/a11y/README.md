@@ -110,4 +110,4 @@ Forces the cleanup of all active traps in the stack and purges any dynamic `aria
 
 ## License
 
-MIT © [KoHaRxnP](https://github.com/KoHaRxnP)
+Apache 2.0 © [GeaStack Community](https://github.com/geastack-community)

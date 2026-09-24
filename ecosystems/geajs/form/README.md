@@ -152,4 +152,4 @@ Invalidates any in-flight async validations and releases internal field referenc
 
 ## License
 
-MIT © [KoHaRxnP](https://github.com/KoHaRxnP)
+Apache 2.0 © [GeaStack Community](https://github.com/geastack-community)
