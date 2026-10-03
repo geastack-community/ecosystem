@@ -1,8 +1,8 @@
 # @geastack-community/form
 
-> Geastack Community is an independent community project and is not
+> GeaStack Community is an independent community project and is not
 > affiliated with or endorsed by Gea. Gea has granted permission for the
-> project to use the 'Geastack Community' name and associated
+> project to use the 'GeaStack Community' name and associated
 > geastack-community domain and package namespace.
 
 The definitive, **Zero-Hooks** form-state, validation, and submission library for **Gea (`@geajs/core`)**.
