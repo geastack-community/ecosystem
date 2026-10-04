@@ -16,7 +16,7 @@ This repository is managed as a Monorepo using `pnpm` workspaces.
 
 ```bash
 # Clone the repository
-git clone [https://github.com/geastack-community/ecosystem.git](https://github.com/geastack-community/ecosystem.git)
+git clone https://github.com/geastack-community/ecosystem.git
 cd ecosystem
 
 # Install all dependencies across the workspace
