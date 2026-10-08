@@ -1,5 +1,5 @@
 import { Store } from '@geajs/core';
-import { ComponentConstructor, Disposable, MixinConstructor } from '@geastack-community/utils';
+import { ComponentConstructor, Disposable, MixinConstructor, CreatorName } from '@geastack-community/utils';
 
 const queryCache = new Map<string, { data: unknown; updateAt: number }>();
 const queryInstances = new Map<string, Set<GeaQuery<unknown>>>();
@@ -204,7 +204,7 @@ export class GeaQuery<T = unknown> extends Store {
 const creator = 'createQuery';
 
 export type WithQueryMixin<K extends string = typeof creator> = {
-    [P in K]: <TData>(
+    [P in CreatorName<K, typeof creator>]: <TData>(
         queryKey: string,
         queryFn: () => Promise<TData>,
         options?: GeaQueryOptions
@@ -239,7 +239,7 @@ export function withQuery<
         }
     };
 
-    return Derived as unknown as TBase & MixinConstructor<TBase, WithQueryMixin<K>>;
+    return Derived as unknown as MixinConstructor<TBase, WithQueryMixin<K>>;
 }
 
 export function _clearQueryCache() {

@@ -1,5 +1,5 @@
 import { Store } from '@geajs/core';
-import { ComponentConstructor, Disposable, MixinConstructor } from '@geastack-community/utils';
+import { ComponentConstructor, Disposable, MixinConstructor, CreatorName } from '@geastack-community/utils';
 
 export type GeaValidator<T> = (value: T, values: Record<string, unknown>) => string | null | Promise<string | null>;
 
@@ -238,7 +238,7 @@ const creator = 'createForm';
 export const managedForms = Symbol("managedForms");
 
 export type WithFormMixin<K extends string = typeof creator> = {
-    [P in K]: <TValues extends Record<string, unknown>>(
+    [P in CreatorName<K, typeof creator>]: <TValues extends Record<string, unknown>>(
         schema: { [K in keyof TValues]: GeaFieldConfig<TValues[K]> },
         options?: GeaFormOptions
     ) => GeaForm<TValues>;
@@ -272,5 +272,5 @@ export function withForm<
         }
     };
 
-    return Derived as unknown as TBase & MixinConstructor<TBase, WithFormMixin<K>>;
+    return Derived as unknown as MixinConstructor<TBase, WithFormMixin<K>>;
 }

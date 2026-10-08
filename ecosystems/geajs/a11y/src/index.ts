@@ -1,5 +1,5 @@
 import { Store } from '@geajs/core';
-import { ComponentConstructor, Disposable, MixinConstructor } from '@geastack-community/utils';
+import { ComponentConstructor, Disposable, MixinConstructor, CreatorName } from '@geastack-community/utils';
 
 export interface GeaA11yOptions {
     trapFocus?: boolean;
@@ -213,7 +213,7 @@ export class GeaA11y extends Store {
 const creator = 'createA11y';
 
 export type WithA11yMixin<K extends string = typeof creator> = {
-    [P in K]: (options?: GeaA11yOptions) => GeaA11y;
+    [P in CreatorName<K, typeof creator>]: (options?: GeaA11yOptions) => GeaA11y;
 } & Disposable;
 
 const managedA11yInstances = Symbol("managedA11yInstances");
@@ -242,7 +242,7 @@ export function withA11y<
         }
     };
 
-    return Derived as unknown as TBase & MixinConstructor<TBase, WithA11yMixin<K>>;
+    return Derived as unknown as MixinConstructor<TBase, WithA11yMixin<K>>;
 }
 
 export function _clearA11yGlobalState() {
