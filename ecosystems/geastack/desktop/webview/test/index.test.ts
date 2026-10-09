@@ -29,6 +29,16 @@ describe('GeaWebView Component', () => {
     }
   })
 
+  it('should reject a negative handle on darwin / linux and accept 0 (auto-detect)', async () => {
+    if (process.platform === 'darwin' || process.platform === 'linux') {
+      const invalid = new GeaWebView()
+      await expect(invalid.mount(-1)).rejects.toThrow('[GeaWebView] Invalid parent handle.')
+
+      const autoDetect = new GeaWebView()
+      await expect(autoDetect.mount(0)).resolves.not.toThrow()
+    }
+  })
+
   it('should not crash when calling navigate(), setFrame(), and destroy()', async () => {
     const webview = new GeaWebView({ url: 'https://geastack.com' })
     const dummyHandle = 1001
