@@ -27,6 +27,33 @@ if (!existsSync(path.join(sourcePath, 'CMakeLists.txt'))) {
   process.exit(0)
 }
 
+// Only the library we build is shipped: geastack_webview_<platform>.dll
+// (Windows), libgeastack_webview_<platform>.so (Linux) or
+// libgeastack_webview_<platform>.dylib (macOS).
+const OWN_LIBRARY_PATTERN = /^(lib)?geastack_webview_[A-Za-z0-9]+\.(dll|so|dylib)$/
+
+// Runtime dependency of the Win32 build. CMake copies it next to our DLL
+// (POST_BUILD), so it is only taken from the directory our DLL is in. The
+// NuGet package ships x64 / x86 / arm64 copies that must not be mixed up.
+const RUNTIME_DEPENDENCIES = ['WebView2Loader.dll']
+
+// Directories that only contain CMake internals or downloaded packages.
+const IGNORED_DIRECTORIES = new Set(['_deps', 'CMakeFiles'])
+
+const findOwnLibraries = (dir, found = []) => {
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const fullPath = path.join(dir, entry.name)
+    if (entry.isDirectory()) {
+      if (!IGNORED_DIRECTORIES.has(entry.name)) {
+        findOwnLibraries(fullPath, found)
+      }
+    } else if (OWN_LIBRARY_PATTERN.test(entry.name)) {
+      found.push(fullPath)
+    }
+  }
+  return found
+}
+
 console.log(`[build-native] Building native library for ${platform} in ${packageDir}...`)
 
 try {
@@ -39,24 +66,27 @@ try {
     mkdirSync(distDir, { recursive: true })
   }
 
-  const extensions = ['.so', '.dylib', '.dll']
+  const libraries = findOwnLibraries(buildPath)
+  if (libraries.length === 0) {
+    throw new Error(`No native library matching ${OWN_LIBRARY_PATTERN} found in ${buildPath}.`)
+  }
 
-  const findAndCopy = (dir) => {
-    const entries = readdirSync(dir, { withFileTypes: true })
-    for (const entry of entries) {
-      const fullPath = path.join(dir, entry.name)
-      if (entry.isDirectory()) {
-        findAndCopy(fullPath)
-      } else if (extensions.some(ext => entry.name.endsWith(ext))) {
-        const destPath = path.join(distDir, entry.name)
-        copyFileSync(fullPath, destPath)
-        console.log(`[build-native] Copied ${entry.name} -> dist/`)
+  const copy = (fullPath) => {
+    const name = path.basename(fullPath)
+    copyFileSync(fullPath, path.join(distDir, name))
+    console.log(`[build-native] Copied ${name} -> dist/`)
+  }
+
+  for (const libraryPath of libraries) {
+    copy(libraryPath)
+
+    for (const dependency of RUNTIME_DEPENDENCIES) {
+      const dependencyPath = path.join(path.dirname(libraryPath), dependency)
+      if (existsSync(dependencyPath)) {
+        copy(dependencyPath)
       }
     }
   }
-
-  findAndCopy(buildPath)
-
 } catch (error) {
   console.error(`[build-native] Build failed:`, error.message)
   process.exit(1)
