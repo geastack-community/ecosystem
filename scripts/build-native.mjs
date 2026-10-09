@@ -1,5 +1,5 @@
 import { execSync } from 'node:child_process'
-import { existsSync } from 'node:fs'
+import { existsSync, mkdirSync, copyFileSync, readdirSync } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 
@@ -33,6 +33,30 @@ try {
   execSync(`cmake -B "${buildPath}" -S "${sourcePath}"`, { stdio: 'inherit' })
   execSync(`cmake --build "${buildPath}" --config Release`, { stdio: 'inherit' })
   console.log(`[build-native] Successfully built native library.`)
+
+  const distDir = path.resolve(packageDir, 'dist')
+  if (!existsSync(distDir)) {
+    mkdirSync(distDir, { recursive: true })
+  }
+
+  const extensions = ['.so', '.dylib', '.dll']
+
+  const findAndCopy = (dir) => {
+    const entries = readdirSync(dir, { withFileTypes: true })
+    for (const entry of entries) {
+      const fullPath = path.join(dir, entry.name)
+      if (entry.isDirectory()) {
+        findAndCopy(fullPath)
+      } else if (extensions.some(ext => entry.name.endsWith(ext))) {
+        const destPath = path.join(distDir, entry.name)
+        copyFileSync(fullPath, destPath)
+        console.log(`[build-native] Copied ${entry.name} -> dist/`)
+      }
+    }
+  }
+
+  findAndCopy(buildPath)
+
 } catch (error) {
   console.error(`[build-native] Build failed:`, error.message)
   process.exit(1)
