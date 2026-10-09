@@ -47,6 +47,11 @@
     "@geastack/apple": { "optional": true },
     "@geastack/linux": { "optional": true }
   },
+  "devDependencies": {
+    "@geastack/windows": "^0.1.2",
+    "@geastack/apple": "^0.2.14",
+    "@geastack/linux": "^0.1.2"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/geastack-community/ecosystem.git",
