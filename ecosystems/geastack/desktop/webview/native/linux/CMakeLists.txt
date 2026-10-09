@@ -5,7 +5,10 @@ set(CMAKE_CXX_STANDARD 17)
 
 if (UNIX AND NOT APPLE)
     find_package(PkgConfig REQUIRED)
-    pkg_check_modules(WEBKIT2GTK REQUIRED webkit2gtk-4.0)
+    pkg_check_modules(WEBKIT2GTK webkit2gtk-4.1)
+    if (NOT WEBKIT2GTK_FOUND)
+        pkg_check_modules(WEBKIT2GTK REQUIRED webkit2gtk-4.0)
+    endif()
 
     add_library(geastack_webview_linux SHARED
         geastack_webview_linux.cpp
