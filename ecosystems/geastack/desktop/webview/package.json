@@ -1,7 +1,7 @@
 {
-  "name": "@geastack-community/utils",
-  "version": "0.1.0",
-  "description": "The definitive, Zero-Hooks utility library for Gea.",
+  "name": "@geastack-community/webview",
+  "version": "0.0.1",
+  "description": "Cross-platform WebView component for GeaStack desktop targets (Windows, macOS, Linux)",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -17,16 +17,20 @@
     "dist"
   ],
   "scripts": {
-    "build": "pnpm build:js && pnpm build:dts",
+    "build": "pnpm build:native && pnpm build:js && pnpm build:dts",
     "build:js": "esbuild src/index.ts --bundle --packages=external --minify --format=cjs --outfile=dist/index.cjs && esbuild src/index.ts --bundle --packages=external --minify --format=esm --outfile=dist/index.js",
     "build:dts": "dts-bundle-generator -o dist/index.d.ts src/index.ts --no-check",
+    "build:native": "node scripts/build-native.mjs",
     "prepublishOnly": "pnpm build"
   },
   "keywords": [
     "gea",
-    "geajs",
-    "utils",
-    "store"
+    "geastack",
+    "webview",
+    "win32",
+    "appkit",
+    "gtk",
+    "browser"
   ],
   "publishConfig": {
     "access": "public"
@@ -34,18 +38,22 @@
   "author": "GeaStack Community",
   "license": "Apache-2.0",
   "peerDependencies": {
-    "@geajs/core": "^1.5.1"
+    "@geastack/windows": "^0.1.2",
+    "@geastack/apple": "^0.2.14",
+    "@geastack/linux": "^0.1.2"
   },
-  "devDependencies": {
-    "@geajs/core": "^1.5.1"
+  "peerDependenciesMeta": {
+    "@geastack/windows": { "optional": true },
+    "@geastack/apple": { "optional": true },
+    "@geastack/linux": { "optional": true }
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/geastack-community/ecosystem.git",
-    "directory": "ecosystems/utils"
+    "directory": "ecosystems/geastack/desktop/webview"
   },
   "bugs": {
     "url": "https://github.com/geastack-community/ecosystem/issues"
   },
-  "homepage": "https://github.com/geastack-community/ecosystem/tree/main/ecosystems/utils#readme"
+  "homepage": "https://github.com/geastack-community/ecosystem/tree/main/ecosystems/geastack/desktop/webview#readme"
 }

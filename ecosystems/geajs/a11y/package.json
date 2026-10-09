@@ -35,7 +35,7 @@
     "access": "public"
   },
   "author": "GeaStack Community",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "peerDependencies": {
     "@geajs/core": "^1.5.1",
     "@geastack-community/utils": "workspace:^"

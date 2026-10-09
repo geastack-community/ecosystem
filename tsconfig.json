@@ -11,12 +11,14 @@
     "skipLibCheck": true,
     "composite": true,
     "stripInternal": true,
+    "types": ["node"]
   },
   "files": [],
   "references": [
     { "path": "./ecosystems/geajs/a11y" },
     { "path": "./ecosystems/geajs/form" },
     { "path": "./ecosystems/geajs/query" },
-    { "path": "./ecosystems/geajs/utils" }
+    { "path": "./ecosystems/geajs/utils" },
+    { "path": "./ecosystems/geastack/desktop/webview" }
   ]
 }
