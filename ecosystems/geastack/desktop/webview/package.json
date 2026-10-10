@@ -1,57 +1,57 @@
 {
   "name": "@geastack-community/webview",
-  "version": "0.0.1",
-  "description": "Cross-platform WebView component for GeaStack desktop targets (Windows, macOS, Linux)",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "version": "0.1.0-alpha.0",
+  "description": "WebView for GeaStack Windows-native apps (WebView2), lowered by a geatsc compiler plugin",
+  "license": "Apache-2.0",
   "type": "module",
+  "main": "./runtime/index.js",
+  "types": "./types/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    }
+      "types": "./types/index.d.ts",
+      "import": "./runtime/index.js",
+      "default": "./runtime/index.js"
+    },
+    "./geatsc-plugin": {
+      "import": "./geatsc-plugin.mjs"
+    },
+    "./gea-native.json": "./gea-native.json",
+    "./package.json": "./package.json"
   },
   "files": [
-    "dist"
+    "types",
+    "runtime",
+    "native",
+    "third_party",
+    "geatsc-plugin.mjs",
+    "plugin-tables.mjs",
+    "gea-native.json"
   ],
   "scripts": {
-    "build": "pnpm build:native && pnpm build:js && pnpm build:dts",
-    "build:js": "esbuild src/index.ts --bundle --packages=external --minify --format=cjs --outfile=dist/index.cjs && esbuild src/index.ts --bundle --packages=external --minify --format=esm --outfile=dist/index.js",
-    "build:dts": "dts-bundle-generator -o dist/index.d.ts src/index.ts --no-check",
-    "build:native": "node ../../../../scripts/build-native.mjs",
-    "prepublishOnly": "pnpm build"
+    "fetch": "node scripts/fetch-webview2.mjs",
+    "test": "node --test test/plugin.test.mjs",
+    "compile-check": "node scripts/compile-check.mjs",
+    "prepublishOnly": "node scripts/fetch-webview2.mjs && node --test test/plugin.test.mjs && node scripts/compile-check.mjs"
+  },
+  "engines": {
+    "node": ">=20.19"
+  },
+  "peerDependencies": {
+    "@geastack/compiler": ">=1.0.22",
+    "@geastack/windows": "^0.1.2"
   },
   "keywords": [
     "gea",
     "geastack",
     "webview",
-    "win32",
-    "appkit",
-    "gtk",
-    "browser"
+    "webview2",
+    "win32"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "tag": "alpha"
   },
   "author": "GeaStack Community",
-  "license": "Apache-2.0",
-  "peerDependencies": {
-    "@geastack/windows": "^0.1.2",
-    "@geastack/apple": "^0.2.14",
-    "@geastack/linux": "^0.1.2"
-  },
-  "peerDependenciesMeta": {
-    "@geastack/windows": { "optional": true },
-    "@geastack/apple": { "optional": true },
-    "@geastack/linux": { "optional": true }
-  },
-  "devDependencies": {
-    "@geastack/windows": "^0.1.2",
-    "@geastack/apple": "^0.2.14",
-    "@geastack/linux": "^0.1.2"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/geastack-community/ecosystem.git",

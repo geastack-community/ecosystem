@@ -1,0 +1,8 @@
+{
+  "windows": {
+    "sources": ["native/win32/webview.cpp"],
+    "includeDirs": ["native/include", "third_party/webview2/build/native/include"],
+    "libraries": ["third_party/webview2/build/native/x64/WebView2Loader.dll.lib"],
+    "runtimeFiles": ["third_party/webview2/build/native/x64/WebView2Loader.dll"]
+  }
+}

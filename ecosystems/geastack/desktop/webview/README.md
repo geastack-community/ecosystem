@@ -1,19 +1,48 @@
 # @geastack-community/webview
 
-> GeaStack Community is an independent community project and is not
-> affiliated with or endorsed by Gea. Gea has granted permission for the
-> project to use the 'GeaStack Community' name and associated
-> geastack-community domain and package namespace.
+A WebView (WebView2) for GeaStack **Windows-native** apps, lowered by a geatsc
+compiler plugin. Status: **alpha, Windows only.** macOS and Linux are not
+supported yet.
 
-## Parent handle (`mount(parentHandle)`)
+```ts
+import { mainWindowHandle } from '@geastack/windows/Controls'
+import { GeaWebView } from '@geastack-community/webview'
 
-| Platform | `parentHandle` | Backend |
-| --- | --- | --- |
-| Windows | `WinView.handle` / `mainWindowHandle()` (HWND) | WebView2 |
-| macOS | `0` = the app's own window (default); or an `NSView*` supplied by the host | WKWebView |
-| Linux (Experimental) | `0` = this process's own window (default); or an X11 Window ID | WebKitGTK (X11 / Xwayland only) |
+const view = new GeaWebView(mainWindowHandle())
+view.setFrame(0, 40, 800, 560)
+view.navigate('https://example.com')
+// ...
+view.destroy()
+```
 
-Linux requires `libwebkit2gtk-4.1-dev` (or 4.0) and `libgtk-3-dev` at build time.
-Native Wayland sessions are not supported; run the host under X11 or Xwayland.
+`parentHandle` is the HWND of the hosting window: `mainWindowHandle()` or a
+`WinView`'s `handle`. The control is positioned by `setFrame` in the parent's
+client pixels; it does not take part in `WinStackView` layout.
 
-Apache 2.0 © [GeaStack Community](https://github.com/geastack-community)
+## How it works
+
+- `types/index.d.ts` is what the checker types a program against.
+- `geatsc-plugin.mjs` states, as data, that `GeaWebView` is a native handle and
+  what each member renders to (`gea::webview::GeaWebView_*` thunks).
+- `native/win32/webview.cpp` defines the thunks on top of WebView2.
+- `gea-native.json` makes the Windows target compile that file, add the WebView2
+  headers, link `WebView2Loader.dll.lib` and copy `WebView2Loader.dll` beside the
+  executable.
+
+## Build requirements
+
+Run `npm run fetch` once (it downloads the WebView2 SDK into `third_party/`).
+Until the `gea build` plugin collection picks this package up automatically, pass
+the plugin to the build:
+
+```
+set GEA_EXTRA_GEATSC_PLUGINS=<path>\node_modules\@geastack-community\webview\geatsc-plugin.mjs
+```
+
+The WebView2 Runtime must be installed on the machine that runs the app.
+
+## Limits
+
+- All calls must be made on the UI thread that owns the parent window.
+- Coordinates are physical pixels of the parent's client area; no DPI scaling.
+- No script execution, messaging or navigation events yet.

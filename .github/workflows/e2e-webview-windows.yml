@@ -1,0 +1,79 @@
+name: WebView E2E (Windows)
+
+on:
+  push:
+    branches:
+      - '**'
+  workflow_dispatch:
+
+jobs:
+  e2e:
+    runs-on: windows-latest
+    timeout-minutes: 40
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Puts the MSVC / Windows SDK library paths in LIB so lld-link can find
+      # msvcrt.lib and friends.
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      - name: Ensure the WebView2 Runtime is installed
+        shell: pwsh
+        run: |
+          $key = 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}'
+          if (Test-Path $key) {
+            Write-Host "WebView2 Runtime: $((Get-ItemProperty $key).pv)"
+          } else {
+            Invoke-WebRequest 'https://go.microsoft.com/fwlink/p/?LinkId=2124703' -OutFile "$env:RUNNER_TEMP\MicrosoftEdgeWebview2Setup.exe"
+            Start-Process "$env:RUNNER_TEMP\MicrosoftEdgeWebview2Setup.exe" -ArgumentList '/silent', '/install' -Wait
+          }
+
+      - name: Fetch the WebView2 SDK
+        working-directory: ecosystems/geastack/desktop/webview
+        run: node scripts/fetch-webview2.mjs
+
+      # --install-links copies the package instead of symlinking it, so the
+      # plugin resolves @geastack/compiler from the app's node_modules.
+      - name: Install the test app
+        working-directory: e2e/webview-windows-app
+        run: npm install --install-links
+
+      - name: Check the installed package carries its native files
+        working-directory: e2e/webview-windows-app
+        shell: pwsh
+        run: |
+          $package = 'node_modules/@geastack-community/webview'
+          foreach ($file in 'gea-native.json', 'geatsc-plugin.mjs', 'native/win32/webview.cpp', 'third_party/webview2/build/native/include/WebView2.h') {
+            if (-not (Test-Path "$package/$file")) { throw "missing $package/$file" }
+          }
+
+      - name: Typecheck the test app
+        working-directory: e2e/webview-windows-app
+        run: npx tsc --noEmit
+
+      - name: Build the test app
+        working-directory: e2e/webview-windows-app
+        env:
+          GEA_EXTRA_GEATSC_PLUGINS: ${{ github.workspace }}\e2e\webview-windows-app\node_modules\@geastack-community\webview\geatsc-plugin.mjs
+        run: npx gea build --target windows
+
+      - name: Run and verify
+        working-directory: e2e/webview-windows-app
+        shell: pwsh
+        run: ./scripts/verify.ps1
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: webview-e2e
+          path: |
+            e2e/webview-windows-app/artifacts/
+            e2e/webview-windows-app/dist/windows/.generated/**/*.log
+          if-no-files-found: ignore
