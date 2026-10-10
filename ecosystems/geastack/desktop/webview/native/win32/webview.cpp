@@ -12,7 +12,9 @@
 
 #include <cmath>
 #include <cstdint>
+#include <cwchar>
 #include <memory>
+#include <set>
 #include <string>
 
 #include "WebView2.h"
@@ -30,6 +32,7 @@ struct Instance {
   ComPtr<ICoreWebView2Controller> controller;
   ComPtr<ICoreWebView2> webview;
   State state = State::Creating;
+  HWND host = nullptr;  // the "Chrome_WidgetWin_0" window WebView2 created inside `parent`
   RECT bounds{0, 0, 0, 0};
   std::wstring pendingUrl;  // a copy: the caller's string is gone by the time we are ready
   bool hasPendingUrl = false;
@@ -46,6 +49,28 @@ InstancePtr lookup(GeaWebView self) {
 }
 
 void destroySlot(void *slot) { delete static_cast<InstancePtr *>(slot); }
+
+// WebView2 hosts each control in a child window of the parent. Remember which
+// ones belong to a control so several controls in one parent are told apart.
+std::set<HWND> &claimedHosts() {
+  static std::set<HWND> hosts;
+  return hosts;
+}
+
+HWND findHostWindow(HWND parent) {
+  for (HWND child = GetWindow(parent, GW_CHILD); child; child = GetWindow(child, GW_HWNDNEXT)) {
+    wchar_t name[64] = {};
+    GetClassNameW(child, name, 64);
+    if (std::wcscmp(name, L"Chrome_WidgetWin_0") == 0 && !claimedHosts().count(child)) return child;
+  }
+  return nullptr;
+}
+
+// The engine's own views are child windows of the same parent and can end up in
+// front of the control, so the control is raised above its siblings.
+void raise(const Instance &instance) {
+  if (instance.host) SetWindowPos(instance.host, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+}
 
 LONG toPixel(double value) { return static_cast<LONG>(std::lround(value)); }
 
@@ -103,8 +128,16 @@ double GeaWebView_create(double parentHandle) {
                       }
                       instance->controller = controller;
                       controller->get_CoreWebView2(&instance->webview);
+                      instance->host = findHostWindow(instance->parent);
+                      if (instance->host) claimedHosts().insert(instance->host);
+                      // The parent may not have had its final size when the control was
+                      // requested; without an explicit setFrame, fill what it has now.
+                      if (instance->bounds.right <= instance->bounds.left || instance->bounds.bottom <= instance->bounds.top) {
+                        GetClientRect(instance->parent, &instance->bounds);
+                      }
                       controller->put_Bounds(instance->bounds);
                       controller->put_IsVisible(TRUE);
+                      raise(*instance);
                       instance->state = State::Ready;
                       if (instance->hasPendingUrl && instance->webview) {
                         instance->webview->Navigate(instance->pendingUrl.c_str());
@@ -138,13 +171,17 @@ void GeaWebView_setFrame(GeaWebView self, double x, double y, double width, doub
   InstancePtr instance = lookup(self);
   if (!instance || instance->state == State::Closed) return;
   instance->bounds = RECT{toPixel(x), toPixel(y), toPixel(x + width), toPixel(y + height)};
-  if (instance->state == State::Ready && instance->controller) instance->controller->put_Bounds(instance->bounds);
+  if (instance->state == State::Ready && instance->controller) {
+    instance->controller->put_Bounds(instance->bounds);
+    raise(*instance);
+  }
 }
 
 void GeaWebView_destroy(GeaWebView self) {
   InstancePtr instance = lookup(self);
   if (!instance) return;
   instance->state = State::Closed;
+  if (instance->host) claimedHosts().erase(instance->host);
   if (instance->controller) instance->controller->Close();
   instance->webview.Reset();
   instance->controller.Reset();

@@ -21,8 +21,22 @@ public static class Win {
   [DllImport("user32.dll")] public static extern bool GetWindowRect(IntPtr hwnd, out RECT rect);
   [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr hwnd);
   [DllImport("user32.dll")] public static extern bool ShowWindow(IntPtr hwnd, int command);
+  [DllImport("user32.dll")] public static extern IntPtr GetWindow(IntPtr hwnd, uint command);
+  [DllImport("user32.dll")] public static extern bool IsWindowVisible(IntPtr hwnd);
   [DllImport("user32.dll")] public static extern bool EnumChildWindows(IntPtr parent, EnumProc callback, IntPtr lParam);
   [DllImport("user32.dll", CharSet = CharSet.Unicode)] public static extern int GetClassName(IntPtr hwnd, StringBuilder text, int count);
+  // Direct children, front to back (GW_CHILD = 5, GW_HWNDNEXT = 2).
+  public static List<string> DirectChildren(IntPtr parent) {
+    var list = new List<string>();
+    for (IntPtr child = GetWindow(parent, 5); child != IntPtr.Zero; child = GetWindow(child, 2)) {
+      var text = new StringBuilder(256);
+      GetClassName(child, text, 256);
+      RECT rect;
+      GetWindowRect(child, out rect);
+      list.Add(string.Format("{0} visible={1} rect={2},{3},{4},{5}", text, IsWindowVisible(child), rect.Left, rect.Top, rect.Right, rect.Bottom));
+    }
+    return list;
+  }
   public static List<string> ChildClasses(IntPtr parent) {
     var classes = new List<string>();
     EnumChildWindows(parent, (hwnd, lParam) => {
@@ -75,6 +89,8 @@ try {
 
   Save-Screen 'screen.png'
 
+  Write-Host 'Direct children of the main window, front to back:'
+  [Win]::DirectChildren($process.MainWindowHandle) | ForEach-Object { Write-Host "  $_" }
   $classes = [Win]::ChildClasses($process.MainWindowHandle)
   Write-Host "Child window classes: $($classes -join ', ')"
   if (-not ($classes | Where-Object { $_ -like 'Chrome_*' })) {
