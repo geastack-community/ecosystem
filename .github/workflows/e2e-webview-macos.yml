@@ -37,7 +37,7 @@ jobs:
 
       - name: Typecheck the test app
         working-directory: e2e/webview-macos-app
-        run: pnpm dlx tsc --noEmit
+        run: pnpm tsc --noEmit
 
       - name: Build the test app
         working-directory: e2e/webview-macos-app
