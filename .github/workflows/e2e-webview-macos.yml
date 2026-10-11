@@ -33,7 +33,7 @@ jobs:
       - name: Record the resolved @geastack versions
         working-directory: e2e/webview-macos-app
         continue-on-error: true
-        run: npm ls --all @geastack/core @geastack/engine @geastack/host @geastack/compiler @geastack/cli
+        run: pnpm ls --depth 1 @geastack/core @geastack/engine @geastack/host @geastack/compiler @geastack/cli @geastack/windows @geastack/apple
 
       - name: Typecheck the test app
         working-directory: e2e/webview-macos-app

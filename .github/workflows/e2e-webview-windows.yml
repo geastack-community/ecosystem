@@ -54,7 +54,7 @@ jobs:
       - name: Record the resolved @geastack versions
         working-directory: e2e/webview-windows-app
         continue-on-error: true
-        run: npm ls --all @geastack/core @geastack/engine @geastack/host @geastack/compiler @geastack/cli
+        run: pnpm ls --depth 1 @geastack/core @geastack/engine @geastack/host @geastack/compiler @geastack/cli @geastack/windows @geastack/apple
 
       - name: Check the installed package carries its native files
         working-directory: e2e/webview-windows-app
@@ -84,6 +84,7 @@ jobs:
         if: always()
         with:
           name: webview-e2e
-          path: e2e/webview-windows-app/artifacts/
+          path: |
+            e2e/webview-windows-app/artifacts/
             e2e/webview-windows-app/dist/windows/.generated/**/*.log
           if-no-files-found: ignore
