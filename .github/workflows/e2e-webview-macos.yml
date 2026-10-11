@@ -22,7 +22,18 @@ jobs:
       # plugin resolves @geastack/compiler from the app's node_modules.
       - name: Install the test app
         working-directory: e2e/webview-macos-app
+        env:
+          # The test apps have no lockfile, so the @geastack packages float. A
+          # release made after the last green run broke the Windows build
+          # (host/display.h no longer compiles), so resolve the tree as it was
+          # then until a lockfile from a green run is committed.
+          NPM_CONFIG_BEFORE: '2026-10-10T04:28:00Z'
         run: npm install --install-links
+
+      - name: Record the resolved @geastack versions
+        working-directory: e2e/webview-macos-app
+        continue-on-error: true
+        run: npm ls --all @geastack/core @geastack/engine @geastack/host @geastack/compiler @geastack/cli
 
       - name: Typecheck the test app
         working-directory: e2e/webview-macos-app
@@ -42,5 +53,7 @@ jobs:
         if: always()
         with:
           name: webview-e2e-macos
-          path: e2e/webview-macos-app/artifacts/
+          path: |
+            e2e/webview-macos-app/package-lock.json
+            e2e/webview-macos-app/artifacts/
           if-no-files-found: ignore
