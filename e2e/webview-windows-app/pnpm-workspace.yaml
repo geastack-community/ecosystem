@@ -1,0 +1,4 @@
+allowBuilds:
+  '@serialport/bindings-cpp': false
+minimumReleaseAgeExclude:
+  - '@geastack/debugger@0.1.0'

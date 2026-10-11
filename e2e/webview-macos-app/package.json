@@ -8,10 +8,10 @@
   },
   "dependencies": {
     "@geajs/core": "^1.3.0",
-    "@geastack/core": "^0.1.12",
-    "@geastack/cli": "^0.1.78",
+    "@geastack-community/webview": "file:../../ecosystems/geastack/desktop/webview",
     "@geastack/apple": "^0.2.15",
-    "@geastack-community/webview": "file:../../ecosystems/geastack/desktop/webview"
+    "@geastack/cli": "^0.1.78",
+    "@geastack/core": "^0.1.40"
   },
   "devDependencies": {
     "typescript": "latest"

@@ -18,32 +18,32 @@ jobs:
         with:
           node-version: 22
 
-      # --install-links copies the package instead of symlinking it, so the
-      # plugin resolves @geastack/compiler from the app's node_modules.
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 12
+
+      # The lockfile pins every @geastack package; .npmrc turns on install-links so
+      # the webview package is copied (not symlinked) and its plugin resolves
+      # @geastack/compiler from the app's node_modules.
       - name: Install the test app
         working-directory: e2e/webview-macos-app
-        env:
-          # The test apps have no lockfile, so the @geastack packages float. A
-          # release made after the last green run broke the Windows build
-          # (host/display.h no longer compiles), so resolve the tree as it was
-          # then until a lockfile from a green run is committed.
-          NPM_CONFIG_BEFORE: '2026-10-10T04:28:00Z'
-        run: npm install --install-links
+        run: pnpm install --frozen-lockfile
 
       - name: Record the resolved @geastack versions
         working-directory: e2e/webview-macos-app
         continue-on-error: true
-        run: npm ls --all @geastack/core @geastack/engine @geastack/host @geastack/compiler @geastack/cli
+        run: pnpm ls --all @geastack/core @geastack/engine @geastack/host @geastack/compiler @geastack/cli
 
       - name: Typecheck the test app
         working-directory: e2e/webview-macos-app
-        run: npx tsc --noEmit
+        run: pnpm dlx tsc --noEmit
 
       - name: Build the test app
         working-directory: e2e/webview-macos-app
         env:
           GEA_EXTRA_GEATSC_PLUGINS: ${{ github.workspace }}/e2e/webview-macos-app/node_modules/@geastack-community/webview/geatsc-plugin.mjs
-        run: npx gea build --target macos
+        run: pnpm dlx gea build --target macos
 
       - name: Run and verify
         working-directory: e2e/webview-macos-app
@@ -53,7 +53,5 @@ jobs:
         if: always()
         with:
           name: webview-e2e-macos
-          path: |
-            e2e/webview-macos-app/package-lock.json
-            e2e/webview-macos-app/artifacts/
+          path: e2e/webview-macos-app/artifacts/
           if-no-files-found: ignore

@@ -1,0 +1,11 @@
+allowBuilds:
+  '@serialport/bindings-cpp': false
+minimumReleaseAgeExclude:
+  - '@geastack/apple@0.2.15'
+  - '@geastack/compiler@1.0.29'
+  - '@geastack/core@0.1.40'
+  - '@geastack/debugger@0.1.0'
+  - '@geastack/elements@0.1.6'
+  - '@geastack/engine@0.1.16'
+  - '@geastack/geatsc-plugin-gea@0.1.22'
+  - '@geastack/host@0.1.15'

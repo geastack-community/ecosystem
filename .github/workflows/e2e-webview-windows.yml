@@ -18,6 +18,11 @@ jobs:
         with:
           node-version: 22
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 12
+
       # Puts the MSVC / Windows SDK library paths in LIB so lld-link can find
       # msvcrt.lib and friends.
       - uses: ilammy/msvc-dev-cmd@v1
@@ -39,22 +44,17 @@ jobs:
         working-directory: ecosystems/geastack/desktop/webview
         run: node scripts/fetch-webview2.mjs
 
-      # --install-links copies the package instead of symlinking it, so the
-      # plugin resolves @geastack/compiler from the app's node_modules.
+      # The lockfile pins every @geastack package; .npmrc turns on install-links so
+      # the webview package is copied (not symlinked) and its plugin resolves
+      # @geastack/compiler from the app's node_modules.
       - name: Install the test app
         working-directory: e2e/webview-windows-app
-        env:
-          # The test apps have no lockfile, so the @geastack packages float. A
-          # release made after the last green run broke the Windows build
-          # (host/display.h no longer compiles), so resolve the tree as it was
-          # then until a lockfile from a green run is committed.
-          NPM_CONFIG_BEFORE: '2026-10-10T04:28:00Z'
-        run: npm install --install-links
+        run: pnpm install
 
       - name: Record the resolved @geastack versions
         working-directory: e2e/webview-windows-app
         continue-on-error: true
-        run: npm ls --all @geastack/core @geastack/engine @geastack/host @geastack/compiler @geastack/cli
+        run: pnpm ls --all @geastack/core @geastack/engine @geastack/host @geastack/compiler @geastack/cli
 
       - name: Check the installed package carries its native files
         working-directory: e2e/webview-windows-app
@@ -67,13 +67,13 @@ jobs:
 
       - name: Typecheck the test app
         working-directory: e2e/webview-windows-app
-        run: npx tsc --noEmit
+        run: pnpm dlx tsc --noEmit
 
       - name: Build the test app
         working-directory: e2e/webview-windows-app
         env:
           GEA_EXTRA_GEATSC_PLUGINS: ${{ github.workspace }}\e2e\webview-windows-app\node_modules\@geastack-community\webview\geatsc-plugin.mjs
-        run: npx gea build --target windows
+        run: pnpm dlx gea build --target windows
 
       - name: Run and verify
         working-directory: e2e/webview-windows-app
@@ -84,8 +84,6 @@ jobs:
         if: always()
         with:
           name: webview-e2e
-          path: |
-            e2e/webview-windows-app/package-lock.json
-            e2e/webview-windows-app/artifacts/
+          path: e2e/webview-windows-app/artifacts/
             e2e/webview-windows-app/dist/windows/.generated/**/*.log
           if-no-files-found: ignore
