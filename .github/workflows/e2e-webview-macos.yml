@@ -1,0 +1,46 @@
+name: WebView E2E (macOS)
+
+on:
+  push:
+    branches:
+      - '**'
+  workflow_dispatch:
+
+jobs:
+  e2e:
+    runs-on: macos-latest
+    timeout-minutes: 45
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # --install-links copies the package instead of symlinking it, so the
+      # plugin resolves @geastack/compiler from the app's node_modules.
+      - name: Install the test app
+        working-directory: e2e/webview-macos-app
+        run: npm install --install-links
+
+      - name: Typecheck the test app
+        working-directory: e2e/webview-macos-app
+        run: npx tsc --noEmit
+
+      - name: Build the test app
+        working-directory: e2e/webview-macos-app
+        env:
+          GEA_EXTRA_GEATSC_PLUGINS: ${{ github.workspace }}/e2e/webview-macos-app/node_modules/@geastack-community/webview/geatsc-plugin.mjs
+        run: npx gea build --target macos
+
+      - name: Run and verify
+        working-directory: e2e/webview-macos-app
+        run: ./scripts/verify.sh
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: webview-e2e-macos
+          path: e2e/webview-macos-app/artifacts/
+          if-no-files-found: ignore

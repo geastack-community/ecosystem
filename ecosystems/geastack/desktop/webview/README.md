@@ -1,8 +1,8 @@
 # @geastack-community/webview
 
-A WebView (WebView2) for GeaStack **Windows-native** apps, lowered by a geatsc
-compiler plugin. Status: **alpha, Windows only.** macOS and Linux are not
-supported yet.
+A web view for GeaStack apps, lowered by a geatsc compiler plugin. Status:
+**alpha.** Windows (WebView2) is verified in CI; macOS (WKWebView) is new and
+being verified; Linux is not supported.
 
 ```ts
 import { mainWindowHandle } from '@geastack/windows/Controls'
@@ -18,6 +18,22 @@ view.destroy()
 `parentHandle` is the HWND of the hosting window: `mainWindowHandle()` or a
 `WinView`'s `handle`. The control is positioned by `setFrame` in the parent's
 client pixels; it does not take part in `WinStackView` layout.
+
+## macOS
+
+`parentHandle` is `0`: the control goes into the app's own window, fills it and
+follows its size until `setFrame` is called. The macOS target has no hook for a
+dependency to add native sources, so the app lists the file itself:
+
+```json
+{
+  "gea": {
+    "nativeSources": ["node_modules/@geastack-community/webview/native/macos/webview.mm"]
+  }
+}
+```
+
+WebKit is loaded at run time; nothing has to be added to the link line.
 
 ## How it works
 

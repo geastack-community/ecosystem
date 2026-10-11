@@ -1,7 +1,7 @@
 {
   "name": "@geastack-community/webview",
   "version": "0.1.0-alpha.0",
-  "description": "WebView for GeaStack Windows-native apps (WebView2), lowered by a geatsc compiler plugin",
+  "description": "WebView for GeaStack apps (WebView2 on Windows, WKWebView on macOS), lowered by a geatsc compiler plugin",
   "license": "Apache-2.0",
   "type": "module",
   "main": "./runtime/index.js",
@@ -29,9 +29,9 @@
   ],
   "scripts": {
     "fetch": "node scripts/fetch-webview2.mjs",
-    "test": "node --test test/plugin.test.mjs",
+    "test": "node --test test/plugin.test.mjs test/prune.test.mjs",
     "compile-check": "node scripts/compile-check.mjs",
-    "prepublishOnly": "node scripts/fetch-webview2.mjs && node --test test/plugin.test.mjs && node scripts/compile-check.mjs"
+    "prepublishOnly": "node scripts/fetch-webview2.mjs && node --test test/plugin.test.mjs test/prune.test.mjs && node scripts/compile-check.mjs"
   },
   "engines": {
     "node": ">=20.19"
@@ -43,9 +43,11 @@
   "keywords": [
     "gea",
     "geastack",
+    "macos",
     "webview",
     "webview2",
-    "win32"
+    "win32",
+    "wkwebview"
   ],
   "publishConfig": {
     "access": "public",
@@ -56,6 +58,11 @@
     "type": "git",
     "url": "git+https://github.com/geastack-community/ecosystem.git",
     "directory": "ecosystems/geastack/desktop/webview"
+  },
+  "peerDependenciesMeta": {
+    "@geastack/windows": {
+      "optional": true
+    }
   },
   "bugs": {
     "url": "https://github.com/geastack-community/ecosystem/issues"
