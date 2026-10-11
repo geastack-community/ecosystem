@@ -54,7 +54,7 @@ jobs:
       - name: Record the resolved @geastack versions
         working-directory: e2e/webview-windows-app
         continue-on-error: true
-        run: pnpm ls --all @geastack/core @geastack/engine @geastack/host @geastack/compiler @geastack/cli
+        run: npm ls --all @geastack/core @geastack/engine @geastack/host @geastack/compiler @geastack/cli
 
       - name: Check the installed package carries its native files
         working-directory: e2e/webview-windows-app
