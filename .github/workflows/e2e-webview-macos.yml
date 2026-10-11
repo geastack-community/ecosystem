@@ -43,7 +43,7 @@ jobs:
         working-directory: e2e/webview-macos-app
         env:
           GEA_EXTRA_GEATSC_PLUGINS: ${{ github.workspace }}/e2e/webview-macos-app/node_modules/@geastack-community/webview/geatsc-plugin.mjs
-        run: pnpm dlx gea build --target macos
+        run: npx gea build --target macos
 
       - name: Run and verify
         working-directory: e2e/webview-macos-app

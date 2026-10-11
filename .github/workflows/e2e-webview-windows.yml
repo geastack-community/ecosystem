@@ -73,7 +73,7 @@ jobs:
         working-directory: e2e/webview-windows-app
         env:
           GEA_EXTRA_GEATSC_PLUGINS: ${{ github.workspace }}\e2e\webview-windows-app\node_modules\@geastack-community\webview\geatsc-plugin.mjs
-        run: pnpm dlx gea build --target windows
+        run: npx gea build --target windows
 
       - name: Run and verify
         working-directory: e2e/webview-windows-app
