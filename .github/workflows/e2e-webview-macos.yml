@@ -53,6 +53,7 @@ jobs:
         run: npx gea build --target macos
 
       - name: Grant execute permission
+        working-directory: e2e/webview-macos-app
         run: chmod +x ./scripts/verify.sh
 
       - name: Run and verify
