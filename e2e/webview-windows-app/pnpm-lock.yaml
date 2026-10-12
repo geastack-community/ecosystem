@@ -9,19 +9,19 @@ importers:
   .:
     dependencies:
       '@geajs/core':
-        specifier: latest
+        specifier: ^1.3.0
         version: 1.5.1
       '@geastack-community/webview':
         specifier: file:../../ecosystems/geastack/desktop/webview
         version: file:../../ecosystems/geastack/desktop/webview(@geastack/compiler@1.0.30)(@geastack/windows@0.1.2(@types/node@22.20.5))
       '@geastack/cli':
-        specifier: latest
+        specifier: ^0.1.78
         version: 0.1.102(@types/node@22.20.5)
       '@geastack/core':
-        specifier: latest
+        specifier: ^0.1.12
         version: 0.1.40(@types/node@22.20.5)
       '@geastack/windows':
-        specifier: latest
+        specifier: ^0.1.0
         version: 0.1.2(@types/node@22.20.5)
     devDependencies:
       typescript:
