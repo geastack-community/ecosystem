@@ -1,3 +1,5 @@
+allowBuilds:
+  '@serialport/bindings-cpp': true
 # This directory is its own pnpm root (so its lockfile lives here). The GeaStack
 # build scripts expect npm's flat layout -- @geastack/engine next to
 # @geastack/core, found from the app's node_modules -- which pnpm's default
