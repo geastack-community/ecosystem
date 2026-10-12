@@ -7,11 +7,11 @@
     "check": "tsc --noEmit"
   },
   "dependencies": {
-    "@geajs/core": "^1.3.0",
+    "@geajs/core": "latest",
     "@geastack-community/webview": "file:../../ecosystems/geastack/desktop/webview",
-    "@geastack/apple": "^0.2.15",
-    "@geastack/cli": "^0.1.78",
-    "@geastack/core": "^0.1.40"
+    "@geastack/apple": "latest",
+    "@geastack/cli": "latest",
+    "@geastack/core": "latest"
   },
   "devDependencies": {
     "typescript": "latest"
