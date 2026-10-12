@@ -33,9 +33,9 @@ jobs:
       - name: Show the install layout
         working-directory: e2e/webview-macos-app
         run: |
-          pnpm --version
-          test -d node_modules/.pnpm && echo "isolated layout (.pnpm exists)" || echo "flat layout"
           ls node_modules/@geastack
+          grep '"version"' node_modules/@geastack/host/package.json node_modules/@geastack/core/package.json node_modules/@geastack/engine/package.json
+          ls node_modules/@geastack/host/host | head -40
 
       - name: Record the resolved @geastack versions
         working-directory: e2e/webview-macos-app
