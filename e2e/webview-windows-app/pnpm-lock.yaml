@@ -30,8 +30,8 @@ importers:
 
 packages:
 
-  '@acemir/cssom@0.9.31':
-    resolution: {integrity: sha512-ZnR3GSaH+/vJ0YlHau21FjfLYjMpYVIzTD8M8vIEQvIGxeOXyXdzCI140rrCY862p/C/BbzWsjc1dgnM9mkoTA==}
+  '@acemir/cssom@0.9.32':
+    resolution: {integrity: sha512-OijrAUu7rrJhSIoHNg6LMPS5e344nwUHA+1EFYYjrh64D+GmytUsfBQjci45TjT+rd5Spsp8B5xsZDT+TgyXXQ==}
 
   '@babel/code-frame@7.29.7':
     resolution: {integrity: sha512-Aup7aUOfpbAUg2ROOJN6Iw5f9DMBlzu0mIkm/malLQFN/YQgO48wCj0Kxa3sEHJvPVFg7siR+qRInwXd2qhQKw==}
@@ -108,22 +108,6 @@ packages:
     engines: {node: '>=22'}
     hasBin: true
 
-  '@geastack/compiler@1.0.27':
-    resolution: {integrity: sha512-47HUw6UhFw2OZyzv0zK8QpGr7tgyzAaFYnXcxdIFRNI5QLa9t3UsPOK25IJ2O6wvIILFoGk9156pX0Okj/bq6Q==}
-    engines: {node: '>=20.19'}
-    hasBin: true
-    peerDependencies:
-      '@geastack/apple': '>=0.2.14'
-      '@geastack/geatsc-plugin-apple-native': '>=0.1.4'
-      '@geastack/geatsc-plugin-gea': '>=0.1.19'
-    peerDependenciesMeta:
-      '@geastack/apple':
-        optional: true
-      '@geastack/geatsc-plugin-apple-native':
-        optional: true
-      '@geastack/geatsc-plugin-gea':
-        optional: true
-
   '@geastack/compiler@1.0.30':
     resolution: {integrity: sha512-jsL68CT7Ne/82Lm0kcf5O/mXRlo0Fp5Vt1QB9qFeaKOZfnN/bhcxfayGYZCE5frQlOGvVo+6Wo4Wh/N4wB4hcQ==}
     engines: {node: '>=20.19'}
@@ -140,10 +124,6 @@ packages:
       '@geastack/geatsc-plugin-gea':
         optional: true
 
-  '@geastack/core@0.1.39':
-    resolution: {integrity: sha512-XhTWXEFvNVIvP2Rlfek7DnHJmOWzv8/GqLM8zsnqz4xUE/wnavXvIWr2+7TMpsqynP2GL07t3LvJUBaoMB3GOA==}
-    engines: {node: '>=20.19'}
-
   '@geastack/core@0.1.40':
     resolution: {integrity: sha512-bTja0X92Kd7MqBXIJWno7AfncvJEYgkIlHg59sC4KY8/xe91LfXWZPdG2XPNny6Nb48+pSUK3e5L1+f60d72fw==}
     engines: {node: '>=20.19'}
@@ -152,16 +132,8 @@ packages:
     resolution: {integrity: sha512-SlOo6Qcf5RxJXgX3UoSDW6nrHYVk4au50lpvVvIJ9rIuji5X2hypSEUs8cVuATUmym0WKAzncZA2jJp1AiSYbg==}
     engines: {node: '>=22'}
 
-  '@geastack/elements@0.1.5':
-    resolution: {integrity: sha512-KrP02WyQrm+xVbV07T2UFtWun2W7+ZBBl3EUtm5MKjHuxvrby5kDFoaWPH/P13Yu6hIyV2IWA4c+8JuZIwsDNw==}
-    engines: {node: '>=20.19'}
-
   '@geastack/elements@0.1.6':
     resolution: {integrity: sha512-rCIlEvq/ymT9Cq+osnb1sF2iTkEBTVRfaBVq/8tTKlyMQbm0eZScwtxo+BjRm80tjlwJj6WyTOzEWVnF20hg5Q==}
-    engines: {node: '>=20.19'}
-
-  '@geastack/engine@0.1.15':
-    resolution: {integrity: sha512-7s4DcBv5qpFeh3wjXNGxgMnb5QQlP57U2AtJC02+Ky8lF2OOy0oKITyRQ+BiqOMbqbsvAjYZlfEoYnHue8aQkw==}
     engines: {node: '>=20.19'}
 
   '@geastack/engine@0.1.16':
@@ -172,38 +144,28 @@ packages:
     resolution: {integrity: sha512-NYw9OD9zGcevkGqv4dFzMXNBdyquANLU4Us04MdY+juTTJ+qgDQwLrS8C67EizD3WrahZbVoEXPd8kj6yQIvzA==}
     engines: {node: '>=20.19'}
 
-  '@geastack/geatsc-plugin-gea@0.1.21':
-    resolution: {integrity: sha512-YjQwp9cViRmWpycGK/2hJg2YTvzRaD3VexNEL+LmnmuhvQF8EatgHeKHwF75QrKseey++qfNA/A2/Ty9f4zdcg==}
-    engines: {node: '>=20.19'}
-    peerDependencies:
-      '@geastack/compiler': '>=1.0.22'
-
   '@geastack/geatsc-plugin-gea@0.1.22':
     resolution: {integrity: sha512-VhixEMv00Oy8LSZkiM7Sv1SKEXP59/Igl8SQck2zWhKzpa6FGu7c64lwwjGfEBZiH9laj3nWQe1MD76NpbFswg==}
     engines: {node: '>=20.19'}
     peerDependencies:
       '@geastack/compiler': '>=1.0.22'
 
-  '@geastack/geatsc-plugin-windows-native@0.1.3':
-    resolution: {integrity: sha512-Z1svHp5CNk4Ap8xKphhrehWyA13VfrTbonsRvJweIcoc/DhIwzY1tpQs6cX0AGPsgi6krfkGSfsSAqA1UtcQMg==}
+  '@geastack/geatsc-plugin-windows-native@0.1.4':
+    resolution: {integrity: sha512-AjodDVPZYlDPDq0g8fAhm9lHJVQsVvcFA6D/FHO60blv8lSQfTh0R1wftqCmcR3oF58boTEt1SPUHNzmkBf8QA==}
     engines: {node: '>=20.19'}
     peerDependencies:
-      '@geastack/compiler': ^1.0.22
-      '@geastack/windows': ^0.1.1
-
-  '@geastack/host@0.1.14':
-    resolution: {integrity: sha512-NA0hedy7gnxVTcVfF+AUa9Om/dEBrLMVk0AU9kRlYDIQtOrF7NCZx6lDOjwWenDmnraMhlwva4owOqCLAkVU3w==}
-    engines: {node: '>=20.19'}
+      '@geastack/compiler': ^1.0.29
+      '@geastack/windows': ^0.1.2
 
   '@geastack/host@0.1.15':
     resolution: {integrity: sha512-++6TDv4VLzfwMet0rZo7hj/UPInObpQ3d+z11wCKcab54HxjcC2nSdwbCmJ+/YZKPaWrW8LJJ0mX5+pZfqHXMA==}
     engines: {node: '>=20.19'}
 
-  '@geastack/node-compat@1.0.17':
-    resolution: {integrity: sha512-6/mMyVCzPoi2UdbQsMtYvssoxBXv46diqRLNVO4UyD2n4JuzGQLMT7e0ZHOv+ZMsyZAnGkDnxNeMJkIP2x7+Ag==}
+  '@geastack/node-compat@1.0.18':
+    resolution: {integrity: sha512-KUHQj1WkZ6OdbEkIRAGbjvqejLFNPEcxh06tzoF+7EKzR0iMFX/MnswLP/tS+QeeusloP4dnwOQfAQhFgU41Iw==}
     engines: {node: '>=22.15.0'}
     peerDependencies:
-      '@geastack/compiler': ^1.0.26
+      '@geastack/compiler': ^1.0.29
     peerDependenciesMeta:
       '@geastack/compiler':
         optional: true
@@ -961,7 +923,7 @@ packages:
 
 snapshots:
 
-  '@acemir/cssom@0.9.31': {}
+  '@acemir/cssom@0.9.32': {}
 
   '@babel/code-frame@7.29.7':
     dependencies:
@@ -1033,7 +995,7 @@ snapshots:
 
   '@geajs/vite-plugin@1.5.0(vite@8.3.4(@types/node@22.20.5))':
     dependencies:
-      '@acemir/cssom': 0.9.31
+      '@acemir/cssom': 0.9.32
       '@babel/generator': 7.29.8
       '@babel/parser': 7.29.9
       '@babel/traverse': 7.29.10
@@ -1045,7 +1007,7 @@ snapshots:
 
   '@geastack-community/webview@file:../../ecosystems/geastack/desktop/webview(@geastack/compiler@1.0.30)(@geastack/windows@0.1.2(@types/node@22.20.5))':
     dependencies:
-      '@geastack/compiler': 1.0.30(@geastack/geatsc-plugin-gea@0.1.21)
+      '@geastack/compiler': 1.0.30(@geastack/geatsc-plugin-gea@0.1.22)
     optionalDependencies:
       '@geastack/windows': 0.1.2(@types/node@22.20.5)
 
@@ -1079,57 +1041,12 @@ snapshots:
       - utf-8-validate
       - yaml
 
-  '@geastack/compiler@1.0.27(@geastack/geatsc-plugin-gea@0.1.21)':
-    dependencies:
-      '@geastack/node-compat': 1.0.17(@geastack/compiler@1.0.27)
-      typescript: 5.9.3
-    optionalDependencies:
-      '@geastack/geatsc-plugin-gea': 0.1.21(@geastack/compiler@1.0.27)
-
-  '@geastack/compiler@1.0.30(@geastack/geatsc-plugin-gea@0.1.21)':
-    dependencies:
-      '@geastack/node-compat': 1.0.17(@geastack/compiler@1.0.30)
-      typescript: 5.9.3
-    optionalDependencies:
-      '@geastack/geatsc-plugin-gea': 0.1.21(@geastack/compiler@1.0.27)
-
   '@geastack/compiler@1.0.30(@geastack/geatsc-plugin-gea@0.1.22)':
     dependencies:
-      '@geastack/node-compat': 1.0.17(@geastack/compiler@1.0.30)
+      '@geastack/node-compat': 1.0.18(@geastack/compiler@1.0.30)
       typescript: 5.9.3
     optionalDependencies:
       '@geastack/geatsc-plugin-gea': 0.1.22(@geastack/compiler@1.0.30)
-
-  '@geastack/core@0.1.39(@types/node@22.20.5)':
-    dependencies:
-      '@babel/generator': 7.29.8
-      '@babel/parser': 7.29.9
-      '@babel/traverse': 7.29.10
-      '@babel/types': 7.29.8
-      '@geajs/core': 1.5.1
-      '@geajs/vite-plugin': 1.5.0(vite@8.3.4(@types/node@22.20.5))
-      '@geastack/compiler': 1.0.27(@geastack/geatsc-plugin-gea@0.1.21)
-      '@geastack/geatsc-plugin-gea': 0.1.21(@geastack/compiler@1.0.27)
-      opentype.js: 2.0.0
-      vite: 8.3.4(@types/node@22.20.5)
-    optionalDependencies:
-      sharp: 0.35.5(@types/node@22.20.5)
-    transitivePeerDependencies:
-      - '@geastack/apple'
-      - '@geastack/geatsc-plugin-apple-native'
-      - '@types/node'
-      - '@vitejs/devtools'
-      - esbuild
-      - jiti
-      - less
-      - sass
-      - sass-embedded
-      - stylus
-      - sugarss
-      - supports-color
-      - terser
-      - tsx
-      - yaml
 
   '@geastack/core@0.1.40(@types/node@22.20.5)':
     dependencies:
@@ -1173,49 +1090,9 @@ snapshots:
       - utf-8-validate
     optional: true
 
-  '@geastack/elements@0.1.5(@types/node@22.20.5)':
-    dependencies:
-      '@geastack/core': 0.1.39(@types/node@22.20.5)
-    transitivePeerDependencies:
-      - '@geastack/apple'
-      - '@geastack/geatsc-plugin-apple-native'
-      - '@types/node'
-      - '@vitejs/devtools'
-      - esbuild
-      - jiti
-      - less
-      - sass
-      - sass-embedded
-      - stylus
-      - sugarss
-      - supports-color
-      - terser
-      - tsx
-      - yaml
-
   '@geastack/elements@0.1.6(@types/node@22.20.5)':
     dependencies:
       '@geastack/core': 0.1.40(@types/node@22.20.5)
-    transitivePeerDependencies:
-      - '@geastack/apple'
-      - '@geastack/geatsc-plugin-apple-native'
-      - '@types/node'
-      - '@vitejs/devtools'
-      - esbuild
-      - jiti
-      - less
-      - sass
-      - sass-embedded
-      - stylus
-      - sugarss
-      - supports-color
-      - terser
-      - tsx
-      - yaml
-
-  '@geastack/engine@0.1.15(@types/node@22.20.5)':
-    dependencies:
-      '@geastack/core': 0.1.39(@types/node@22.20.5)
     transitivePeerDependencies:
       - '@geastack/apple'
       - '@geastack/geatsc-plugin-apple-native'
@@ -1255,37 +1132,24 @@ snapshots:
 
   '@geastack/geaos@0.1.3': {}
 
-  '@geastack/geatsc-plugin-gea@0.1.21(@geastack/compiler@1.0.27)':
-    dependencies:
-      '@geastack/compiler': 1.0.27(@geastack/geatsc-plugin-gea@0.1.21)
-      typescript: 5.9.3
-
   '@geastack/geatsc-plugin-gea@0.1.22(@geastack/compiler@1.0.30)':
     dependencies:
-      '@geastack/compiler': 1.0.30(@geastack/geatsc-plugin-gea@0.1.21)
+      '@geastack/compiler': 1.0.30(@geastack/geatsc-plugin-gea@0.1.22)
       typescript: 5.9.3
 
-  '@geastack/geatsc-plugin-windows-native@0.1.3(@geastack/compiler@1.0.27)(@geastack/windows@0.1.2(@types/node@22.20.5))':
+  '@geastack/geatsc-plugin-windows-native@0.1.4(@geastack/compiler@1.0.30)(@geastack/windows@0.1.2(@types/node@22.20.5))':
     dependencies:
-      '@geastack/compiler': 1.0.27(@geastack/geatsc-plugin-gea@0.1.21)
+      '@geastack/compiler': 1.0.30(@geastack/geatsc-plugin-gea@0.1.22)
       '@geastack/windows': 0.1.2(@types/node@22.20.5)
       typescript: 5.9.3
 
-  '@geastack/host@0.1.14': {}
-
   '@geastack/host@0.1.15': {}
 
-  '@geastack/node-compat@1.0.17(@geastack/compiler@1.0.27)':
+  '@geastack/node-compat@1.0.18(@geastack/compiler@1.0.30)':
     dependencies:
       '@types/node': 22.20.5
     optionalDependencies:
-      '@geastack/compiler': 1.0.27(@geastack/geatsc-plugin-gea@0.1.21)
-
-  '@geastack/node-compat@1.0.17(@geastack/compiler@1.0.30)':
-    dependencies:
-      '@types/node': 22.20.5
-    optionalDependencies:
-      '@geastack/compiler': 1.0.30(@geastack/geatsc-plugin-gea@0.1.21)
+      '@geastack/compiler': 1.0.30(@geastack/geatsc-plugin-gea@0.1.22)
 
   '@geastack/simulator@0.1.15(@types/node@22.20.5)':
     dependencies:
@@ -1341,14 +1205,14 @@ snapshots:
 
   '@geastack/windows@0.1.2(@types/node@22.20.5)':
     dependencies:
-      '@geastack/compiler': 1.0.27(@geastack/geatsc-plugin-gea@0.1.21)
-      '@geastack/core': 0.1.39(@types/node@22.20.5)
-      '@geastack/elements': 0.1.5(@types/node@22.20.5)
-      '@geastack/engine': 0.1.15(@types/node@22.20.5)
+      '@geastack/compiler': 1.0.30(@geastack/geatsc-plugin-gea@0.1.22)
+      '@geastack/core': 0.1.40(@types/node@22.20.5)
+      '@geastack/elements': 0.1.6(@types/node@22.20.5)
+      '@geastack/engine': 0.1.16(@types/node@22.20.5)
       '@geastack/geaos': 0.1.3
-      '@geastack/geatsc-plugin-gea': 0.1.21(@geastack/compiler@1.0.27)
-      '@geastack/geatsc-plugin-windows-native': 0.1.3(@geastack/compiler@1.0.27)(@geastack/windows@0.1.2(@types/node@22.20.5))
-      '@geastack/host': 0.1.14
+      '@geastack/geatsc-plugin-gea': 0.1.22(@geastack/compiler@1.0.30)
+      '@geastack/geatsc-plugin-windows-native': 0.1.4(@geastack/compiler@1.0.30)(@geastack/windows@0.1.2(@types/node@22.20.5))
+      '@geastack/host': 0.1.15
     transitivePeerDependencies:
       - '@geastack/apple'
       - '@geastack/geatsc-plugin-apple-native'
