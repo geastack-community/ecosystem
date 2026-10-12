@@ -1,11 +1,5 @@
-allowBuilds:
-  '@serialport/bindings-cpp': false
-minimumReleaseAgeExclude:
-  - '@geastack/apple@0.2.15'
-  - '@geastack/compiler@1.0.29'
-  - '@geastack/core@0.1.40'
-  - '@geastack/debugger@0.1.0'
-  - '@geastack/elements@0.1.6'
-  - '@geastack/engine@0.1.16'
-  - '@geastack/geatsc-plugin-gea@0.1.22'
-  - '@geastack/host@0.1.15'
+# This directory is its own pnpm root (so its lockfile lives here). The GeaStack
+# build scripts expect npm's flat layout -- @geastack/engine next to
+# @geastack/core, found from the app's node_modules -- which pnpm's default
+# isolated layout hides.
+nodeLinker: hoisted

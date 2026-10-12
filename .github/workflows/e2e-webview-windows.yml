@@ -51,6 +51,14 @@ jobs:
         working-directory: e2e/webview-windows-app
         run: pnpm install
 
+      - name: Show the install layout
+        working-directory: e2e/webview-windows-app
+        shell: pwsh
+        run: |
+          pnpm --version
+          if (Test-Path node_modules/.pnpm) { 'isolated layout (.pnpm exists)' } else { 'flat layout' }
+          Get-ChildItem node_modules/@geastack | Select-Object -ExpandProperty Name
+
       - name: Record the resolved @geastack versions
         working-directory: e2e/webview-windows-app
         continue-on-error: true

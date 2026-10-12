@@ -30,6 +30,13 @@ jobs:
         working-directory: e2e/webview-macos-app
         run: pnpm install --frozen-lockfile
 
+      - name: Show the install layout
+        working-directory: e2e/webview-macos-app
+        run: |
+          pnpm --version
+          test -d node_modules/.pnpm && echo "isolated layout (.pnpm exists)" || echo "flat layout"
+          ls node_modules/@geastack
+
       - name: Record the resolved @geastack versions
         working-directory: e2e/webview-macos-app
         continue-on-error: true
