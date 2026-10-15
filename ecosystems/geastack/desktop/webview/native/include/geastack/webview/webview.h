@@ -27,9 +27,8 @@ struct GeaWebView {
   explicit operator bool() const { return handle != 0; }
 };
 
-// parentHandle: 0 means the app's own window on every platform. A non-zero value
-// is the HWND of the hosting window on Windows, or an NSView* on macOS.
-// Returns 0 on failure. Creation of the control itself may be
+// parentHandle: the HWND of the hosting window on Windows; on macOS 0 means the
+// app's own window. Returns 0 on failure. Creation of the control itself may be
 // asynchronous; calls made before it is ready are remembered and applied.
 double GeaWebView_create(double parentHandle);
 void GeaWebView_navigate(GeaWebView self, std::string url);

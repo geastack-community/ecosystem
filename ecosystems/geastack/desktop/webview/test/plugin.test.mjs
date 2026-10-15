@@ -4,14 +4,14 @@ import { test } from 'node:test'
 import { carrier, declarationModules, hostConstructors, hostMembers, nativeIncludes, nativeTypes, webviewHeader } from '../plugin-tables.mjs'
 
 const root = new URL('..', import.meta.url)
-const declaration = readFileSync(new URL('src/index.ts', root), 'utf8')
+const declaration = readFileSync(new URL('types/index.d.ts', root), 'utf8')
 const header = readFileSync(new URL('native/include/geastack/webview/webview.h', root), 'utf8')
 const sources = {
   'native/win32/webview.cpp': readFileSync(new URL('native/win32/webview.cpp', root), 'utf8'),
   'native/macos/webview.mm': readFileSync(new URL('native/macos/webview.mm', root), 'utf8'),
 }
 
-const declaredMethods = [...declaration.matchAll(/^ {4}(\w+)\(([^)]*)\): void \{$/gm)].map(([, name, parameters]) => [name, parameters.trim() === '' ? 0 : parameters.split(',').length])
+const declaredMethods = [...declaration.matchAll(/^\s{2}(\w+)\(([^)]*)\): void$/gm)].map(([, name, parameters]) => [name, parameters.trim() === '' ? 0 : parameters.split(',').length])
 
 test('every declared method has a host member with the same arity', () => {
   assert.deepEqual(
