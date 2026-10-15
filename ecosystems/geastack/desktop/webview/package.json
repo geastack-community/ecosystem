@@ -4,13 +4,13 @@
   "description": "WebView for GeaStack apps (WebView2 on Windows, WKWebView on macOS), lowered by a geatsc compiler plugin",
   "license": "Apache-2.0",
   "type": "module",
-  "main": "./runtime/index.js",
-  "types": "./types/index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./types/index.d.ts",
-      "import": "./runtime/index.js",
-      "default": "./runtime/index.js"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
     },
     "./geatsc-plugin": {
       "import": "./geatsc-plugin.mjs"
@@ -19,8 +19,7 @@
     "./package.json": "./package.json"
   },
   "files": [
-    "types",
-    "runtime",
+    "dist",
     "native",
     "third_party",
     "geatsc-plugin.mjs",
@@ -31,14 +30,16 @@
     "fetch": "node scripts/fetch-webview2.mjs",
     "test": "node --test test/plugin.test.mjs test/prune.test.mjs",
     "compile-check": "node scripts/compile-check.mjs",
-    "prepublishOnly": "node scripts/fetch-webview2.mjs && node --test test/plugin.test.mjs test/prune.test.mjs && node scripts/compile-check.mjs"
+    "prepublishOnly": "node scripts/fetch-webview2.mjs && npm run build && node --test test/plugin.test.mjs && node scripts/compile-check.mjs",
+    "build": "tsc -p tsconfig.json"
   },
   "engines": {
     "node": ">=20.19"
   },
   "peerDependencies": {
     "@geastack/compiler": ">=1.0.22",
-    "@geastack/windows": "^0.1.2"
+    "@geastack/windows": "^0.1.2",
+    "@geastack-community/utils": "*"
   },
   "keywords": [
     "gea",

@@ -74,6 +74,25 @@ void raise(const Instance &instance) {
 
 LONG toPixel(double value) { return static_cast<LONG>(std::lround(value)); }
 
+struct MainWindowSearch {
+  HWND found = nullptr;
+};
+
+BOOL CALLBACK pickMainWindow(HWND window, LPARAM param) {
+  auto *search = reinterpret_cast<MainWindowSearch *>(param);
+  if (!IsWindowVisible(window) || GetWindow(window, GW_OWNER) != nullptr) return TRUE;
+  if ((GetWindowLongW(window, GWL_EXSTYLE) & WS_EX_TOOLWINDOW) != 0) return TRUE;
+  search->found = window;
+  return FALSE;
+}
+
+HWND resolveParent(double parentHandle) {
+  if (parentHandle != 0) return reinterpret_cast<HWND>(static_cast<std::uintptr_t>(parentHandle));
+  MainWindowSearch search;
+  EnumThreadWindows(GetCurrentThreadId(), pickMainWindow, reinterpret_cast<LPARAM>(&search));
+  return search.found;
+}
+
 std::wstring userDataFolder() {
   wchar_t base[MAX_PATH] = {};
   DWORD length = GetEnvironmentVariableW(L"LOCALAPPDATA", base, MAX_PATH);
@@ -93,7 +112,7 @@ std::wstring userDataFolder() {
 }  // namespace
 
 double GeaWebView_create(double parentHandle) {
-  HWND parent = reinterpret_cast<HWND>(static_cast<std::uintptr_t>(parentHandle));
+  HWND parent = resolveParent(parentHandle);
   if (!parent || !IsWindow(parent)) return 0;
 
   // Already initialised by the engine in the usual case; S_FALSE and

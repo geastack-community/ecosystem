@@ -65,6 +65,9 @@ importers:
 
   ecosystems/geastack/desktop/webview:
     dependencies:
+      '@geastack-community/utils':
+        specifier: '*'
+        version: 0.1.0(@geajs/core@1.5.1)
       '@geastack/compiler':
         specifier: '>=1.0.22'
         version: 1.0.26(@geastack/apple@0.2.14(@types/node@26.6.4)(esbuild@0.28.2))(@geastack/geatsc-plugin-apple-native@0.1.4)(@geastack/geatsc-plugin-gea@0.1.21)
@@ -280,6 +283,11 @@ packages:
     resolution: {integrity: sha512-z50ZKFkAhrALtO+IJJBzwWG+Cj6ugBrKnYfO7n6Xpbb7hj8ydtJ2y/NXW5i03AGcskG0/FUWe4P1zzSxWt4/wg==}
     peerDependencies:
       vite: ^8.0.0
+
+  '@geastack-community/utils@0.1.0':
+    resolution: {integrity: sha512-K3NJjXG3DETX4pfdu/9nk8CdmT67ytF130j9655Jtgcp9Sv2mtBqMl6fh2UvTU/+Gc9El8CONww+T4cTO/kocA==}
+    peerDependencies:
+      '@geajs/core': ^1.5.1
 
   '@geastack/apple@0.2.14':
     resolution: {integrity: sha512-PsI0KaidkPJGrZ8JKvyYHxjtC00T7PQ4vfLXnkgnhCo8ug/GBZCd19byR4dieWvE3bRSr4J8qvjBXs79qgpBkg==}
@@ -1257,6 +1265,10 @@ snapshots:
       vite: 8.3.3(@types/node@26.6.4)(esbuild@0.28.2)
     transitivePeerDependencies:
       - supports-color
+
+  '@geastack-community/utils@0.1.0(@geajs/core@1.5.1)':
+    dependencies:
+      '@geajs/core': 1.5.1
 
   '@geastack/apple@0.2.14(@types/node@26.6.4)(esbuild@0.28.2)':
     dependencies:
