@@ -13,7 +13,7 @@ importers:
         version: 1.5.1
       '@geastack-community/webview':
         specifier: file:../../ecosystems/geastack/desktop/webview
-        version: file:../../ecosystems/geastack/desktop/webview(@geastack/compiler@1.0.27)(@geastack/windows@0.1.2(@types/node@22.20.5))
+        version: file:../../ecosystems/geastack/desktop/webview(@geastack-community/utils@0.1.0(@geajs/core@1.5.1))(@geastack/compiler@1.0.27)(@geastack/windows@0.1.2(@types/node@22.20.5))
       '@geastack/cli':
         specifier: ^0.1.78
         version: 0.1.101(@types/node@22.20.5)
@@ -89,10 +89,16 @@ packages:
     peerDependencies:
       vite: ^8.0.0
 
+  '@geastack-community/utils@0.1.0':
+    resolution: {integrity: sha512-K3NJjXG3DETX4pfdu/9nk8CdmT67ytF130j9655Jtgcp9Sv2mtBqMl6fh2UvTU/+Gc9El8CONww+T4cTO/kocA==}
+    peerDependencies:
+      '@geajs/core': ^1.5.1
+
   '@geastack-community/webview@file:../../ecosystems/geastack/desktop/webview':
     resolution: {directory: ../../ecosystems/geastack/desktop/webview, type: directory}
     engines: {node: '>=20.19'}
     peerDependencies:
+      '@geastack-community/utils': '*'
       '@geastack/compiler': '>=1.0.22'
       '@geastack/windows': ^0.1.2
     peerDependenciesMeta:
@@ -1005,8 +1011,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@geastack-community/webview@file:../../ecosystems/geastack/desktop/webview(@geastack/compiler@1.0.27)(@geastack/windows@0.1.2(@types/node@22.20.5))':
+  '@geastack-community/utils@0.1.0(@geajs/core@1.5.1)':
     dependencies:
+      '@geajs/core': 1.5.1
+
+  '@geastack-community/webview@file:../../ecosystems/geastack/desktop/webview(@geastack-community/utils@0.1.0(@geajs/core@1.5.1))(@geastack/compiler@1.0.27)(@geastack/windows@0.1.2(@types/node@22.20.5))':
+    dependencies:
+      '@geastack-community/utils': 0.1.0(@geajs/core@1.5.1)
       '@geastack/compiler': 1.0.27(@geastack/geatsc-plugin-gea@0.1.21)
     optionalDependencies:
       '@geastack/windows': 0.1.2(@types/node@22.20.5)
