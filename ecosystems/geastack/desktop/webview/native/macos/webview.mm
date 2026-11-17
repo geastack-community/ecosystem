@@ -64,7 +64,16 @@ NSView *resolveParent(double parentHandle) {
     return [object isKindOfClass:[NSView class]] ? (NSView *)object : nil;
   }
   NSWindow *window = NSApp.keyWindow ?: NSApp.mainWindow ?: NSApp.windows.firstObject;
-  return window.contentView;
+  NSView *content = window.contentView;
+  NSLog(@"[GeaWebView] window=%@ content=%@ bounds=%@ subviews=%lu", window,
+        NSStringFromClass(content.class), NSStringFromRect(content.bounds),
+        (unsigned long)content.subviews.count);
+  for (NSView *child in content.subviews) {
+    NSLog(@"[GeaWebView] child=%@ frame=%@ bounds=%@ hidden=%d children=%lu",
+          NSStringFromClass(child.class), NSStringFromRect(child.frame),
+          NSStringFromRect(child.bounds), child.hidden, (unsigned long)child.subviews.count);
+  }
+  return content;
 }
 
 // Public coordinates have a top-left origin; AppKit's is bottom-left unless the
