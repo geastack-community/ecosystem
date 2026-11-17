@@ -49,7 +49,7 @@ jobs:
       # @geastack/compiler from the app's node_modules.
       - name: Install the test app
         working-directory: e2e/webview-windows-app
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Show the install layout
         working-directory: e2e/webview-windows-app
