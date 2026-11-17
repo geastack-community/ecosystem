@@ -122,8 +122,21 @@ double GeaWebView_create(double parentHandle) {
                         instance->state = State::Failed;
                         return S_OK;
                       }
+                      if (!IsWindow(instance->parent)) {
+                        controller->Close();
+                        instance->state = State::Failed;
+                        return S_OK;
+                      }
+
                       instance->controller = controller;
-                      controller->get_CoreWebView2(&instance->webview);
+                      const HRESULT webviewResult = controller->get_CoreWebView2(&instance->webview);
+                      if (FAILED(webviewResult) || !instance->webview) {
+                        controller->Close();
+                        instance->controller.Reset();
+                        instance->state = State::Failed;
+                        return S_OK;
+                      }
+
                       instance->host = findHostWindow(instance->parent);
                       if (instance->host) claimedHosts().insert(instance->host);
                       // The parent may not have had its final size when the control was
@@ -131,13 +144,24 @@ double GeaWebView_create(double parentHandle) {
                       if (instance->bounds.right <= instance->bounds.left || instance->bounds.bottom <= instance->bounds.top) {
                         GetClientRect(instance->parent, &instance->bounds);
                       }
-                      controller->put_Bounds(instance->bounds);
-                      controller->put_IsVisible(TRUE);
+                      const HRESULT boundsResult = controller->put_Bounds(instance->bounds);
+                      const HRESULT visibilityResult = controller->put_IsVisible(TRUE);
+                      if (FAILED(boundsResult) || FAILED(visibilityResult)) {
+                        controller->Close();
+                        instance->webview.Reset();
+                        instance->controller.Reset();
+                        if (instance->host) claimedHosts().erase(instance->host);
+                        instance->host = nullptr;
+                        instance->state = State::Failed;
+                        return S_OK;
+                      }
+
                       raise(*instance);
                       instance->state = State::Ready;
-                      if (instance->hasPendingUrl && instance->webview) {
-                        instance->webview->Navigate(instance->pendingUrl.c_str());
+                      if (instance->hasPendingUrl) {
+                        const HRESULT navigationResult = instance->webview->Navigate(instance->pendingUrl.c_str());
                         instance->hasPendingUrl = false;
+                        if (FAILED(navigationResult)) instance->state = State::Failed;
                       }
                       return S_OK;
                     })
@@ -156,7 +180,7 @@ void GeaWebView_navigate(GeaWebView self, std::string url) {
   if (!instance) return;
   const std::wstring wide = gea::windows::text::toWide(url);
   if (instance->state == State::Ready && instance->webview) {
-    instance->webview->Navigate(wide.c_str());
+    if (FAILED(instance->webview->Navigate(wide.c_str()))) instance->state = State::Failed;
   } else if (instance->state == State::Creating) {
     instance->pendingUrl = wide;
     instance->hasPendingUrl = true;
@@ -166,6 +190,8 @@ void GeaWebView_navigate(GeaWebView self, std::string url) {
 void GeaWebView_setFrame(GeaWebView self, double x, double y, double width, double height) {
   InstancePtr instance = lookup(self);
   if (!instance || instance->state == State::Closed) return;
+  if (!std::isfinite(x) || !std::isfinite(y) || !std::isfinite(width) || !std::isfinite(height) ||
+      width < 0 || height < 0) return;
   instance->bounds = RECT{toPixel(x), toPixel(y), toPixel(x + width), toPixel(y + height)};
   if (instance->state == State::Ready && instance->controller) {
     instance->controller->put_Bounds(instance->bounds);
