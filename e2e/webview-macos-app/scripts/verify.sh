@@ -20,6 +20,8 @@ before=$(count)
 
 open -n "$app"
 sleep 15
+log show --last 2m --style compact --predicate 'eventMessage CONTAINS "[GeaWebView]"' > artifacts/webview.log 2>&1 || true
+cat artifacts/webview.log
 
 fail=0
 if ! pgrep -f "$exe" > /dev/null; then
