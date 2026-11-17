@@ -38,6 +38,16 @@ if [ "$after" -le "$before" ]; then
   fail=1
 fi
 
+if [ -s artifacts/screen.png ]; then
+  if ! swift scripts/verify-screen.swift artifacts/screen.png; then
+    echo "FAILED: the captured screen does not contain the expected red WebView page"
+    fail=1
+  fi
+else
+  echo "FAILED: no screen capture was produced"
+  fail=1
+fi
+
 pkill -f "$exe" || true
-[ "$fail" -eq 0 ] && echo "OK: a WKWebView was created and is loading content."
+[ "$fail" -eq 0 ] && echo "OK: a WKWebView was created and rendered the red test page."
 exit $fail
