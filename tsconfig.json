@@ -18,7 +18,6 @@
     { "path": "./ecosystems/geajs/a11y" },
     { "path": "./ecosystems/geajs/form" },
     { "path": "./ecosystems/geajs/query" },
-    { "path": "./ecosystems/geajs/utils" },
-    { "path": "./ecosystems/geastack/desktop/webview" }
+    { "path": "./ecosystems/geajs/utils" }
   ]
 }
