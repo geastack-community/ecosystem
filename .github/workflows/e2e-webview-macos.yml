@@ -1,0 +1,68 @@
+name: WebView E2E (macOS)
+
+on:
+  push:
+    branches:
+      - '**'
+  workflow_dispatch:
+
+jobs:
+  e2e:
+    runs-on: macos-latest
+    timeout-minutes: 45
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 12
+
+      # The lockfile pins every @geastack package; .npmrc turns on install-links so
+      # the webview package is copied (not symlinked) and its plugin resolves
+      # @geastack/compiler from the app's node_modules.
+      - name: Install the test app
+        working-directory: e2e/webview-macos-app
+        run: pnpm install --frozen-lockfile
+
+      - name: Show the install layout
+        working-directory: e2e/webview-macos-app
+        run: |
+          ls node_modules/@geastack
+          grep '"version"' node_modules/@geastack/host/package.json node_modules/@geastack/core/package.json node_modules/@geastack/engine/package.json
+          ls node_modules/@geastack/host/host | head -40
+
+      - name: Record the resolved @geastack versions
+        working-directory: e2e/webview-macos-app
+        continue-on-error: true
+        run: pnpm ls --depth 1 @geastack/core @geastack/engine @geastack/host @geastack/compiler @geastack/cli @geastack/windows @geastack/apple
+
+      - name: Typecheck the test app
+        working-directory: e2e/webview-macos-app
+        run: pnpm tsc --noEmit
+
+      - name: Build the test app
+        working-directory: e2e/webview-macos-app
+        env:
+          GEA_EXTRA_GEATSC_PLUGINS: ${{ github.workspace }}/e2e/webview-macos-app/node_modules/@geastack-community/webview/geatsc-plugin.mjs
+        run: npx gea build --target macos
+
+      - name: Grant execute permission
+        working-directory: e2e/webview-macos-app
+        run: chmod +x ./scripts/verify.sh
+
+      - name: Run and verify
+        working-directory: e2e/webview-macos-app
+        run: ./scripts/verify.sh
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: webview-e2e-macos
+          path: e2e/webview-macos-app/artifacts/
+          if-no-files-found: ignore

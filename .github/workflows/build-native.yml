@@ -1,0 +1,29 @@
+name: Build Native
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  webview-windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: ecosystems/geastack/desktop/webview
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Test plugin tables
+        run: node --test test/plugin.test.mjs
+
+      - name: Fetch WebView2 SDK
+        run: node scripts/fetch-webview2.mjs
+
+      - name: Compile webview.cpp
+        run: node scripts/compile-check.mjs

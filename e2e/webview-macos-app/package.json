@@ -1,0 +1,38 @@
+{
+  "name": "geastack-webview-e2e-macos",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@geajs/core": "latest",
+    "@geastack-community/webview": "file:../../ecosystems/geastack/desktop/webview",
+    "@geastack/apple": "latest",
+    "@geastack/cli": "latest",
+    "@geastack/core": "latest"
+  },
+  "devDependencies": {
+    "typescript": "latest"
+  },
+  "gea": {
+    "id": "webview-e2e-macos",
+    "name": "WebView E2E",
+    "entry": "src/index.tsx",
+    "targets": {
+      "web": false,
+      "esp32": false,
+      "rp2350": false,
+      "geaos": false,
+      "macos": true,
+      "ios": false,
+      "android": false,
+      "windows": false
+    },
+    "nativeSources": [
+      "node_modules/@geastack-community/webview/native/macos/webview.mm"
+    ]
+  },
+  "license": "Apache-2.0"
+}

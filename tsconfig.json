@@ -11,6 +11,7 @@
     "skipLibCheck": true,
     "composite": true,
     "stripInternal": true,
+    "types": ["node"]
   },
   "files": [],
   "references": [
