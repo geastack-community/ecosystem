@@ -65,8 +65,8 @@ NSView *resolveParent(double parentHandle) {
   }
   NSWindow *window = NSApp.keyWindow ?: NSApp.mainWindow ?: NSApp.windows.firstObject;
   NSView *content = window.contentView;
-  NSLog(@"[GeaWebView] window=%{public}@ content=%{public}@ bounds=%{public}@ subviews=%lu",
-        window, NSStringFromClass(content.class), NSStringFromRect(content.bounds),
+  NSLog(@"[GeaWebView] content=%s bounds=%.0fx%.0f subviews=%lu",
+        class_getName(content.class), content.bounds.size.width, content.bounds.size.height,
         (unsigned long)content.subviews.count);
   for (NSView *child in content.subviews) {
     NSLog(@"[GeaWebView] child=%@ frame=%@ bounds=%@ hidden=%d children=%lu",
@@ -110,14 +110,15 @@ double GeaWebView_create(double parentHandle) {
 
     WKWebViewConfiguration *configuration = [[configurationClass alloc] init];
     WKWebView *view = [[viewClass alloc] initWithFrame:parent.bounds configuration:configuration];
-    NSLog(@"[GeaWebView] create parentBounds=%{public}@ viewFrame=%{public}@ window=%{public}@",
-          NSStringFromRect(parent.bounds), NSStringFromRect(view.frame), parent.window);
+    NSLog(@"[GeaWebView] create parentBounds=%.0fx%.0f frame=%.0f,%.0f %.0fx%.0f hasWindow=%d",
+          parent.bounds.size.width, parent.bounds.size.height, view.frame.origin.x,
+          view.frame.origin.y, view.frame.size.width, view.frame.size.height, parent.window != nil);
     // Fill the parent and follow it when it is resized, until setFrame places
     // the control explicitly.
     view.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
     [parent addSubview:view positioned:NSWindowAbove relativeTo:nil];
-    NSLog(@"[GeaWebView] after add parentSubviews=%lu viewSuperview=%{public}@ viewWindow=%{public}@",
-          (unsigned long)parent.subviews.count, view.superview, view.window);
+    NSLog(@"[GeaWebView] after add parentSubviews=%lu hasSuperview=%d hasWindow=%d hidden=%d",
+          (unsigned long)parent.subviews.count, view.superview != nil, view.window != nil, view.hidden);
 
     std::lock_guard<std::mutex> lock(tableMutex());
     handle = static_cast<double>(nextHandle()++);
@@ -130,11 +131,12 @@ void GeaWebView_navigate(GeaWebView self, std::string url) {
   runOnMain([&] {
     WKWebView *view = lookup(self);
     NSURL *target = makeURL(url);
-    NSLog(@"[GeaWebView] navigate handle=%.0f view=%{public}@ target=%{public}@",
-          self.handle, view, target);
+    NSLog(@"[GeaWebView] navigate handle=%.0f viewValid=%d targetValid=%d url=%s",
+          self.handle, view != nil, target != nil, url.c_str());
     if (view && target) {
       WKNavigation *navigation = [view loadRequest:[NSURLRequest requestWithURL:target]];
-      NSLog(@"[GeaWebView] navigation=%{public}@ url=%{public}@", navigation, target.absoluteString);
+      NSLog(@"[GeaWebView] navigationValid=%d loading=%d currentURL=%s",
+            navigation != nil, view.isLoading, view.URL.absoluteString.UTF8String ?: "(null)");
     }
   });
 }
