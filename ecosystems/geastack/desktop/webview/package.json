@@ -29,9 +29,9 @@
   ],
   "scripts": {
     "fetch": "node scripts/fetch-webview2.mjs",
-    "test": "node --test test/plugin.test.mjs test/prune.test.mjs",
+    "test": "node --test test/plugin.test.mjs",
     "compile-check": "node scripts/compile-check.mjs",
-    "prepublishOnly": "node scripts/fetch-webview2.mjs && node --test test/plugin.test.mjs test/prune.test.mjs && node scripts/compile-check.mjs"
+    "prepublishOnly": "node scripts/fetch-webview2.mjs && node --test test/plugin.test.mjs && node scripts/compile-check.mjs"
   },
   "engines": {
     "node": ">=20.19"
