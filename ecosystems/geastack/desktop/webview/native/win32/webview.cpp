@@ -96,10 +96,6 @@ double GeaWebView_create(double parentHandle) {
   HWND parent = reinterpret_cast<HWND>(static_cast<std::uintptr_t>(parentHandle));
   if (!parent || !IsWindow(parent)) return 0;
 
-  // Already initialised by the engine in the usual case; S_FALSE and
-  // RPC_E_CHANGED_MODE are both fine to ignore here.
-  CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
-
   auto instance = std::make_shared<Instance>();
   instance->parent = parent;
   GetClientRect(parent, &instance->bounds);
